@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desk — study log & timetable</title>
+<style>
+  :root{
+    --bg: #171a24;
+    --bg-raised: #1e2230;
+    --bg-inset: #12141d;
+    --line: #2c3142;
+    --line-soft: #23273580;
+    --ink: #e8e6df;
+    --ink-dim: #9a9db0;
+    --ink-faint: #656980;
+    --amber: #e8a672;
+    --amber-dim: #a97a53;
+    --teal: #6fb8ad;
+    --danger: #d97878;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --mono: "IBM Plex Mono", "SF Mono", Menlo, Consolas, monospace;
+    --sans: "Inter", -apple-system, "Segoe UI", sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);}
+  ::selection{background:var(--amber-dim);color:#12141d;}
+
+  a{color:var(--amber);}
+
+  .shell{display:flex;min-height:100vh;}
+
+  /* ---------- sidebar ---------- */
+  .side{
+    width:220px;flex-shrink:0;background:var(--bg-inset);
+    border-right:1px solid var(--line);
+    padding:28px 0 20px;
+    display:flex;flex-direction:column;
+  }
+  .brand{
+    font-family:var(--serif);font-size:22px;font-style:italic;
+    color:var(--ink);padding:0 24px 24px;
+    border-bottom:1px solid var(--line-soft);margin-bottom:8px;
+  }
+  .brand span{color:var(--amber);font-style:normal;}
+  nav{display:flex;flex-direction:column;margin-top:8px;}
+  nav button{
+    all:unset;cursor:pointer;padding:11px 24px;color:var(--ink-dim);
+    font-size:14px;border-left:2px solid transparent;
+  }
+  nav button:hover{color:var(--ink);background:var(--line-soft);}
+  nav button.active{color:var(--amber);border-left-color:var(--amber);background:var(--line-soft);}
+  .side-foot{margin-top:auto;padding:16px 24px 0;font-size:12px;color:var(--ink-faint);line-height:1.6;}
+  .clock{font-family:var(--mono);font-size:13px;color:var(--ink-dim);padding:0 24px 14px;}
+
+  /* ---------- main ---------- */
+  main{flex:1;padding:36px 44px 60px;max-width:900px;}
+  h1{font-family:var(--serif);font-weight:400;font-style:italic;font-size:30px;margin:0 0 6px;color:var(--ink);}
+  .sub{color:var(--ink-faint);font-size:13.5px;margin:0 0 30px;}
+  section.view{display:none;}
+  section.view.active{display:block;}
+
+  /* ---------- shared bits ---------- */
+  .card{
+    background:var(--bg-raised);border:1px solid var(--line);
+    border-radius:6px;padding:18px 20px;margin-bottom:14px;
+  }
+  label{display:block;font-size:12.5px;color:var(--ink-dim);margin-bottom:5px;}
+  input, select, textarea{
+    width:100%;background:var(--bg-inset);border:1px solid var(--line);
+    color:var(--ink);border-radius:4px;padding:9px 10px;font-size:14px;
+    font-family:var(--sans);
+  }
+  textarea{resize:vertical;min-height:70px;font-family:var(--sans);line-height:1.5;}
+  input:focus, select:focus, textarea:focus{outline:1px solid var(--amber-dim);border-color:var(--amber-dim);}
+  .row{display:flex;gap:12px;}
+  .row > *{flex:1;}
+  button.btn{
+    all:unset;cursor:pointer;background:var(--amber);color:#1a1108;
+    padding:9px 16px;border-radius:4px;font-size:13.5px;font-weight:600;
+    display:inline-block;
+  }
+  button.btn:hover{background:#f0b587;}
+  button.btn.ghost{background:transparent;color:var(--ink-dim);border:1px solid var(--line);}
+  button.btn.ghost:hover{color:var(--ink);border-color:var(--ink-faint);}
+  button.btn.danger{background:transparent;color:var(--danger);border:1px solid #4a2b2b;}
+  button.btn.danger:hover{background:#2a1717;}
+  .form-actions{display:flex;gap:10px;margin-top:12px;}
+
+  /* ---------- timetable ---------- */
+  .day-tabs{display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap;}
+  .day-tabs button{
+    all:unset;cursor:pointer;padding:6px 13px;font-size:12.5px;
+    border:1px solid var(--line);border-radius:20px;color:var(--ink-faint);
+  }
+  .day-tabs button.active{color:#1a1108;background:var(--teal);border-color:var(--teal);}
+  .slot{
+    display:flex;gap:14px;align-items:flex-start;padding:12px 0;
+    border-bottom:1px solid var(--line-soft);
+  }
+  .slot:last-child{border-bottom:none;}
+  .slot .time{
+    font-family:var(--mono);font-size:12.5px;color:var(--amber);
+    width:98px;flex-shrink:0;padding-top:2px;
+  }
+  .slot .body{flex:1;}
+  .slot .subj{font-size:14.5px;color:var(--ink);}
+  .slot .topic{font-size:12.5px;color:var(--ink-faint);margin-top:2px;}
+  .slot .del{all:unset;cursor:pointer;color:var(--ink-faint);font-size:16px;line-height:1;padding:2px 4px;}
+  .slot .del:hover{color:var(--danger);}
+  .empty{color:var(--ink-faint);font-size:13.5px;padding:20px 0;font-style:italic;}
+
+  /* ---------- tables ---------- */
+  .table-picker{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+  .table-picker button{
+    all:unset;cursor:pointer;padding:6px 13px;font-size:12.5px;
+    border:1px solid var(--line);border-radius:20px;color:var(--ink-faint);
+  }
+  .table-picker button.active{color:#1a1108;background:var(--amber);border-color:var(--amber);}
+  .table-head-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+  .table-head-row h3{font-family:var(--serif);font-style:italic;font-weight:400;font-size:19px;margin:0;color:var(--ink);}
+  .grid-wrap{overflow-x:auto;}
+  table.datagrid{border-collapse:collapse;width:100%;font-size:13.5px;}
+  table.datagrid th, table.datagrid td{
+    border:1px solid var(--line);padding:0;min-width:120px;
+  }
+  table.datagrid th{
+    background:var(--bg-inset);color:var(--ink-dim);font-weight:500;
+    text-align:left;padding:8px 10px;font-size:12.5px;white-space:nowrap;
+  }
+  table.datagrid th .col-del{all:unset;cursor:pointer;color:var(--ink-faint);float:right;padding:0 2px;}
+  table.datagrid th .col-del:hover{color:var(--danger);}
+  table.datagrid td input{
+    border:none;background:transparent;border-radius:0;padding:8px 10px;
+    width:100%;font-size:13.5px;
+  }
+  table.datagrid td input:focus{outline:none;background:var(--line-soft);}
+  table.datagrid td.row-del-cell{min-width:32px;width:32px;text-align:center;}
+  table.datagrid .row-del{all:unset;cursor:pointer;color:var(--ink-faint);padding:6px;}
+  table.datagrid .row-del:hover{color:var(--danger);}
+  .grid-actions{display:flex;gap:10px;margin-top:12px;}
+  .col-add-row{display:flex;gap:8px;margin-top:12px;align-items:center;}
+  .col-add-row input{width:180px;}
+
+  /* ---------- todo ---------- */
+  .stat-row{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;}
+  .stat-box{
+    flex:1;min-width:120px;background:var(--bg-raised);border:1px solid var(--line);
+    border-radius:6px;padding:14px 16px;
+  }
+  .stat-box .stat-label{font-size:12px;color:var(--ink-faint);}
+  .stat-box .stat-value{font-family:var(--mono);font-size:24px;color:var(--amber);margin-top:4px;}
+  .stat-box .stat-value.teal{color:var(--teal);}
+
+  .filter-tabs{display:flex;gap:4px;margin-bottom:14px;}
+  .filter-tabs button{
+    all:unset;cursor:pointer;padding:6px 13px;font-size:12.5px;
+    border:1px solid var(--line);border-radius:20px;color:var(--ink-faint);
+  }
+  .filter-tabs button.active{color:#1a1108;background:var(--amber);border-color:var(--amber);}
+
+  .todo-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line-soft);}
+  .todo-item:last-child{border-bottom:none;}
+  .todo-item input[type="checkbox"]{
+    width:17px;height:17px;flex-shrink:0;accent-color:var(--amber);cursor:pointer;
+  }
+  .todo-item .todo-text{flex:1;font-size:14px;color:var(--ink);}
+  .todo-item.done .todo-text{color:var(--ink-faint);text-decoration:line-through;}
+  .todo-item .todo-due{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);white-space:nowrap;}
+  .todo-item .todo-due.overdue{color:var(--danger);}
+  .todo-item .del{all:unset;cursor:pointer;color:var(--ink-faint);font-size:16px;line-height:1;padding:2px 4px;}
+  .todo-item .del:hover{color:var(--danger);}
+
+  .analytics-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;}
+  .analytics-head h3{font-family:var(--serif);font-style:italic;font-weight:400;font-size:17px;margin:0;color:var(--ink);}
+  .analytics-head .rate{font-family:var(--mono);font-size:13px;color:var(--teal);}
+  .bar-chart{display:flex;gap:8px;align-items:flex-end;height:110px;padding-top:14px;margin-top:10px;}
+  .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:6px;}
+  .bar-col .bar-val{font-size:11px;color:var(--ink-dim);font-family:var(--mono);}
+  .bar-col .bar{width:60%;background:var(--amber);border-radius:3px 3px 0 0;min-height:3px;transition:height .3s;}
+  .bar-col.month .bar{background:var(--teal);}
+  .bar-col .bar-label{font-size:11px;color:var(--ink-faint);font-family:var(--mono);}
+
+  /* ---------- notes / log ---------- */
+  .entry{
+    border-bottom:1px solid var(--line-soft);padding:16px 0;
+  }
+  .entry:last-child{border-bottom:none;}
+  .entry-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:6px;}
+  .entry-tag{
+    font-family:var(--mono);font-size:11px;color:var(--teal);
+    border:1px solid #2b3f3c;padding:2px 8px;border-radius:20px;
+  }
+  .entry-date{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);}
+  .entry-title{font-size:15px;color:var(--ink);margin:2px 0 4px;}
+  .entry-body{font-size:13.5px;color:var(--ink-dim);line-height:1.6;white-space:pre-wrap;}
+  .entry-actions{margin-top:8px;display:flex;gap:14px;}
+  .entry-actions button{all:unset;cursor:pointer;font-size:11.5px;color:var(--ink-faint);}
+  .entry-actions button:hover{color:var(--ink);}
+
+  /* ---------- sync ---------- */
+  .status-line{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-dim);margin-bottom:16px;}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--ink-faint);}
+  .dot.on{background:var(--teal);}
+  .toast{
+    position:fixed;bottom:24px;right:24px;background:var(--bg-raised);
+    border:1px solid var(--line);color:var(--ink);padding:11px 18px;
+    border-radius:6px;font-size:13.5px;opacity:0;transform:translateY(8px);
+    transition:.25s;pointer-events:none;
+  }
+  .toast.show{opacity:1;transform:translateY(0);}
+
+  @media (max-width: 720px){
+    .shell{flex-direction:column;}
+    .side{width:100%;flex-direction:row;overflow-x:auto;padding:14px 0;}
+    .brand{display:none;}
+    nav{flex-direction:row;}
+    .side-foot,.clock{display:none;}
+    main{padding:24px 18px 50px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <aside class="side">
+    <div class="brand">desk<span>.</span></div>
+    <div class="clock" id="clock"></div>
+    <nav>
+      <button data-view="today" class="active">Today</button>
+      <button data-view="timetable">Timetable</button>
+      <button data-view="notes">Notes</button>
+      <button data-view="log">Learning log</button>
+      <button data-view="tables">Tables</button>
+      <button data-view="todo">To-do</button>
+      <button data-view="sync">Backup & sync</button>
+    </nav>
+    <div class="side-foot">Everything here stays on this device unless you connect Google Drive in Backup &amp; sync.</div>
+  </aside>
+
+  <main>
+
+    <!-- TODAY -->
+    <section class="view active" id="view-today">
+      <h1>Today</h1>
+      <p class="sub" id="today-date"></p>
+      <div class="card">
+        <div id="today-slots"></div>
+      </div>
+      <h1 style="font-size:20px;margin-top:34px;">Recent notes</h1>
+      <div class="card" id="today-notes"></div>
+    </section>
+
+    <!-- TIMETABLE -->
+    <section class="view" id="view-timetable">
+      <h1>Timetable</h1>
+      <p class="sub">Block out what you study, and when.</p>
+
+      <div class="day-tabs" id="day-tabs"></div>
+
+      <div class="card">
+        <div class="row">
+          <div>
+            <label>Start time</label>
+            <input type="time" id="tt-start" value="18:00">
+          </div>
+          <div>
+            <label>End time</label>
+            <input type="time" id="tt-end" value="19:00">
+          </div>
+        </div>
+        <div class="row" style="margin-top:12px;">
+          <div>
+            <label>Subject / skill</label>
+            <input type="text" id="tt-subject" placeholder="e.g. React, DSA, IELTS">
+          </div>
+          <div>
+            <label>Topic (optional)</label>
+            <input type="text" id="tt-topic" placeholder="e.g. useEffect + cleanup">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn" id="tt-add">Add slot</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div id="tt-slots"></div>
+      </div>
+    </section>
+
+    <!-- NOTES -->
+    <section class="view" id="view-notes">
+      <h1>Notes</h1>
+      <p class="sub">Quick things worth remembering — a snippet, a gotcha, a link.</p>
+
+      <div class="card">
+        <label>Subject</label>
+        <input type="text" id="note-subject" placeholder="e.g. React">
+        <div style="height:10px;"></div>
+        <label>Title</label>
+        <input type="text" id="note-title" placeholder="e.g. useEffect cleanup order">
+        <div style="height:10px;"></div>
+        <label>Note</label>
+        <textarea id="note-body" placeholder="Write it the way you'd explain it to yourself in 3 months."></textarea>
+        <div class="form-actions">
+          <button class="btn" id="note-add">Save note</button>
+        </div>
+      </div>
+
+      <div class="card" id="notes-list"></div>
+    </section>
+
+    <!-- LEARNING LOG -->
+    <section class="view" id="view-log">
+      <h1>Learning log</h1>
+      <p class="sub">One entry per session — what you actually learned, in your own words.</p>
+
+      <div class="card">
+        <div class="row">
+          <div>
+            <label>Date</label>
+            <input type="date" id="log-date">
+          </div>
+          <div>
+            <label>Subject</label>
+            <input type="text" id="log-subject" placeholder="e.g. DSA">
+          </div>
+        </div>
+        <div style="height:10px;"></div>
+        <label>What did you learn / do?</label>
+        <textarea id="log-body" placeholder="e.g. Solved 3 tree problems. Finally understood how recursion unwinds for post-order traversal."></textarea>
+        <div class="form-actions">
+          <button class="btn" id="log-add">Add entry</button>
+        </div>
+      </div>
+
+      <div class="card" id="log-list"></div>
+    </section>
+
+    <!-- TABLES -->
+    <section class="view" id="view-tables">
+      <h1>Tables</h1>
+      <p class="sub">Build your own tracker — progress charts, comparisons, checklists, whatever needs rows and columns.</p>
+
+      <div class="card">
+        <div class="row">
+          <div>
+            <label>New table name</label>
+            <input type="text" id="new-table-name" placeholder="e.g. Weekly progress">
+          </div>
+          <div>
+            <label>Columns (comma separated)</label>
+            <input type="text" id="new-table-cols" placeholder="e.g. Subject, Topic, Status">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn" id="new-table-add">Create table</button>
+        </div>
+      </div>
+
+      <div class="table-picker" id="table-picker"></div>
+      <div id="table-view"></div>
+    </section>
+
+    <!-- TODO -->
+    <section class="view" id="view-todo">
+      <h1>To-do</h1>
+      <p class="sub">Small tasks, tracked — with a score so progress isn't just a feeling.</p>
+
+      <div class="stat-row">
+        <div class="stat-box">
+          <div class="stat-label">Total score</div>
+          <div class="stat-value" id="stat-total">0</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">This week</div>
+          <div class="stat-value" id="stat-week">0</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">This month</div>
+          <div class="stat-value teal" id="stat-month">0</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="row">
+          <div style="flex:2;">
+            <label>Task</label>
+            <input type="text" id="todo-text" placeholder="e.g. Finish 5 DSA problems">
+          </div>
+          <div>
+            <label>Due (optional)</label>
+            <input type="date" id="todo-due">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn" id="todo-add">Add task</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="filter-tabs" id="todo-filters">
+          <button data-filter="active" class="active">Active</button>
+          <button data-filter="done">Completed</button>
+          <button data-filter="all">All</button>
+        </div>
+        <div id="todo-list"></div>
+      </div>
+
+      <div class="card">
+        <div class="analytics-head">
+          <h3>This week</h3>
+          <span class="rate" id="week-rate"></span>
+        </div>
+        <div class="bar-chart" id="week-chart"></div>
+      </div>
+
+      <div class="card">
+        <div class="analytics-head">
+          <h3>This month</h3>
+          <span class="rate" id="month-rate"></span>
+        </div>
+        <div class="bar-chart" id="month-chart"></div>
+      </div>
+    </section>
+
+    <!-- SYNC -->
+    <section class="view" id="view-sync">
+      <h1>Backup &amp; sync</h1>
+      <p class="sub">Your data lives in this browser by default. Back it up so a cleared cache never costs you your notes.</p>
+
+      <div class="card">
+        <h3 style="margin-top:0;font-weight:600;font-size:14.5px;">Local file backup</h3>
+        <p class="sub" style="margin-bottom:14px;">Works with no setup — downloads/loads a single JSON file.</p>
+        <div class="form-actions">
+          <button class="btn ghost" id="export-json">Download backup (.json)</button>
+          <label class="btn ghost" style="cursor:pointer;">
+            Restore from file
+            <input type="file" id="import-json" accept=".json" style="display:none;">
+          </label>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-top:0;font-weight:600;font-size:14.5px;">Google Drive</h3>
+        <div class="status-line">
+          <span class="dot" id="drive-dot"></span>
+          <span id="drive-status">Not connected</span>
+        </div>
+        <p class="sub" id="drive-hint" style="margin-bottom:14px;"></p>
+        <div class="form-actions">
+          <button class="btn ghost" id="drive-connect">Connect Google Drive</button>
+          <button class="btn ghost" id="drive-save" style="display:none;">Save to Drive</button>
+          <button class="btn ghost" id="drive-load" style="display:none;">Load from Drive</button>
+        </div>
+      </div>
+
+      <div class="card danger-zone">
+        <h3 style="margin-top:0;font-weight:600;font-size:14.5px;color:var(--danger);">Reset</h3>
+        <p class="sub" style="margin-bottom:14px;">Erases everything stored in this browser. Back up first.</p>
+        <button class="btn danger" id="wipe-all">Erase all local data</button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   CONFIG — only needed if you want Google Drive sync.
+   Leave GOOGLE_CLIENT_ID empty to hide/disable Drive features.
+   See the setup guide for how to get this value.
+   ============================================================ */
+const CONFIG = {
+  GOOGLE_CLIENT_ID: "" // e.g. "1234567890-abc123.apps.googleusercontent.com"
+};
+
+/* ---------------- storage ---------------- */
+const STORE_KEY = "desk_data_v1";
+const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+
+function loadData(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return { timetable: {}, notes: [], log: [], tables: [], todos: [] };
+}
+function saveData(){
+  localStorage.setItem(STORE_KEY, JSON.stringify(data));
+}
+let data = loadData();
+DAYS.forEach(d => { if(!data.timetable[d]) data.timetable[d] = []; });
+if(!data.tables) data.tables = [];
+  if(!data.todos) data.todos = [];
+
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(()=>t.classList.remove("show"), 2400);
+}
+
+/* ---------------- nav ---------------- */
+document.querySelectorAll("nav button").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("view-"+btn.dataset.view).classList.add("active");
+    if(btn.dataset.view==="today") renderToday();
+    if(btn.dataset.view==="tables") renderTablePicker();
+    if(btn.dataset.view==="todo") renderTodo();
+  });
+});
+
+/* ---------------- clock ---------------- */
+function tickClock(){
+  const el = document.getElementById("clock");
+  const now = new Date();
+  el.textContent = now.toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"}) +
+    "  " + now.toLocaleTimeString(undefined,{hour:"2-digit",minute:"2-digit"});
+}
+tickClock(); setInterval(tickClock, 30000);
+
+/* ---------------- timetable ---------------- */
+let activeDay = DAYS[(new Date().getDay()+6)%7]; // Mon=0
+
+function renderDayTabs(){
+  const el = document.getElementById("day-tabs");
+  el.innerHTML = "";
+  DAYS.forEach(d=>{
+    const b = document.createElement("button");
+    b.textContent = d;
+    if(d===activeDay) b.classList.add("active");
+    b.addEventListener("click", ()=>{ activeDay=d; renderDayTabs(); renderSlots(); });
+    el.appendChild(b);
+  });
+}
+
+function renderSlots(){
+  const el = document.getElementById("tt-slots");
+  const slots = [...data.timetable[activeDay]].sort((a,b)=>a.start.localeCompare(b.start));
+  el.innerHTML = "";
+  if(slots.length===0){
+    el.innerHTML = `<div class="empty">No slots yet for ${activeDay}. Add one above.</div>`;
+    return;
+  }
+  slots.forEach(s=>{
+    const row = document.createElement("div");
+    row.className = "slot";
+    row.innerHTML = `
+      <div class="time">${s.start}–${s.end}</div>
+      <div class="body">
+        <div class="subj">${escapeHtml(s.subject)}</div>
+        ${s.topic ? `<div class="topic">${escapeHtml(s.topic)}</div>` : ""}
+      </div>
+      <button class="del" title="Remove">×</button>`;
+    row.querySelector(".del").addEventListener("click", ()=>{
+      data.timetable[activeDay] = data.timetable[activeDay].filter(x=>x.id!==s.id);
+      saveData(); renderSlots();
+    });
+    el.appendChild(row);
+  });
+}
+
+document.getElementById("tt-add").addEventListener("click", ()=>{
+  const start = document.getElementById("tt-start").value;
+  const end = document.getElementById("tt-end").value;
+  const subject = document.getElementById("tt-subject").value.trim();
+  const topic = document.getElementById("tt-topic").value.trim();
+  if(!start || !end || !subject){ toast("Add a start time, end time, and subject"); return; }
+  data.timetable[activeDay].push({ id: uid(), start, end, subject, topic });
+  saveData();
+  document.getElementById("tt-subject").value = "";
+  document.getElementById("tt-topic").value = "";
+  renderSlots();
+  toast("Slot added");
+});
+
+/* ---------------- notes ---------------- */
+function renderNotes(){
+  const el = document.getElementById("notes-list");
+  const items = [...data.notes].sort((a,b)=>b.ts-a.ts);
+  el.innerHTML = "";
+  if(items.length===0){ el.innerHTML = `<div class="empty">No notes yet.</div>`; return; }
+  items.forEach(n=>{
+    const div = document.createElement("div");
+    div.className = "entry";
+    div.innerHTML = `
+      <div class="entry-head">
+        <span class="entry-tag">${escapeHtml(n.subject||"general")}</span>
+        <span class="entry-date">${new Date(n.ts).toLocaleDateString()}</span>
+      </div>
+      <div class="entry-title">${escapeHtml(n.title||"Untitled")}</div>
+      <div class="entry-body">${escapeHtml(n.body)}</div>
+      <div class="entry-actions"><button class="del-note">Delete</button></div>`;
+    div.querySelector(".del-note").addEventListener("click", ()=>{
+      data.notes = data.notes.filter(x=>x.id!==n.id);
+      saveData(); renderNotes(); renderToday();
+    });
+    el.appendChild(div);
+  });
+}
+document.getElementById("note-add").addEventListener("click", ()=>{
+  const subject = document.getElementById("note-subject").value.trim();
+  const title = document.getElementById("note-title").value.trim();
+  const body = document.getElementById("note-body").value.trim();
+  if(!body){ toast("Write something in the note first"); return; }
+  data.notes.push({ id: uid(), subject, title, body, ts: Date.now() });
+  saveData();
+  document.getElementById("note-subject").value = "";
+  document.getElementById("note-title").value = "";
+  document.getElementById("note-body").value = "";
+  renderNotes(); renderToday();
+  toast("Note saved");
+});
+
+/* ---------------- learning log ---------------- */
+function renderLog(){
+  const el = document.getElementById("log-list");
+  const items = [...data.log].sort((a,b)=> (b.date||"").localeCompare(a.date||""));
+  el.innerHTML = "";
+  if(items.length===0){ el.innerHTML = `<div class="empty">No entries yet.</div>`; return; }
+  items.forEach(n=>{
+    const div = document.createElement("div");
+    div.className = "entry";
+    div.innerHTML = `
+      <div class="entry-head">
+        <span class="entry-tag">${escapeHtml(n.subject||"general")}</span>
+        <span class="entry-date">${n.date}</span>
+      </div>
+      <div class="entry-body">${escapeHtml(n.body)}</div>
+      <div class="entry-actions"><button class="del-log">Delete</button></div>`;
+    div.querySelector(".del-log").addEventListener("click", ()=>{
+      data.log = data.log.filter(x=>x.id!==n.id);
+      saveData(); renderLog();
+    });
+    el.appendChild(div);
+  });
+}
+document.getElementById("log-date").value = new Date().toISOString().slice(0,10);
+document.getElementById("log-add").addEventListener("click", ()=>{
+  const date = document.getElementById("log-date").value || new Date().toISOString().slice(0,10);
+  const subject = document.getElementById("log-subject").value.trim();
+  const body = document.getElementById("log-body").value.trim();
+  if(!body){ toast("Write what you learned first"); return; }
+  data.log.push({ id: uid(), date, subject, body });
+  saveData();
+  document.getElementById("log-subject").value = "";
+  document.getElementById("log-body").value = "";
+  renderLog();
+  toast("Logged");
+});
+
+/* ---------------- tables ---------------- */
+let activeTableId = null;
+
+function renderTablePicker(){
+  const el = document.getElementById("table-picker");
+  el.innerHTML = "";
+  if(data.tables.length===0){
+    if(!activeTableId){
+      document.getElementById("table-view").innerHTML =
+        `<div class="empty">No tables yet — create one above.</div>`;
+    }
+    return;
+  }
+  if(!activeTableId || !data.tables.find(t=>t.id===activeTableId)){
+    activeTableId = data.tables[0].id;
+  }
+  data.tables.forEach(t=>{
+    const b = document.createElement("button");
+    b.textContent = t.name;
+    if(t.id===activeTableId) b.classList.add("active");
+    b.addEventListener("click", ()=>{ activeTableId=t.id; renderTablePicker(); renderTableView(); });
+    el.appendChild(b);
+  });
+  renderTableView();
+}
+
+function renderTableView(){
+  const el = document.getElementById("table-view");
+  const t = data.tables.find(x=>x.id===activeTableId);
+  if(!t){ el.innerHTML = ""; return; }
+
+  const wrap = document.createElement("div");
+  wrap.className = "card";
+
+  const head = document.createElement("div");
+  head.className = "table-head-row";
+  head.innerHTML = `<h3>${escapeHtml(t.name)}</h3>`;
+  const delTableBtn = document.createElement("button");
+  delTableBtn.className = "btn danger";
+  delTableBtn.textContent = "Delete table";
+  delTableBtn.addEventListener("click", ()=>{
+    if(!confirm(`Delete "${t.name}" and everything in it?`)) return;
+    data.tables = data.tables.filter(x=>x.id!==t.id);
+    activeTableId = null;
+    saveData(); renderTablePicker();
+  });
+  head.appendChild(delTableBtn);
+  wrap.appendChild(head);
+
+  const gridWrap = document.createElement("div");
+  gridWrap.className = "grid-wrap";
+  const table = document.createElement("table");
+  table.className = "datagrid";
+
+  const thead = document.createElement("thead");
+  const headRow = document.createElement("tr");
+  t.columns.forEach((col, ci)=>{
+    const th = document.createElement("th");
+    th.innerHTML = `${escapeHtml(col)}`;
+    const delCol = document.createElement("button");
+    delCol.className = "col-del";
+    delCol.textContent = "×";
+    delCol.title = "Remove column";
+    delCol.addEventListener("click", ()=>{
+      t.columns.splice(ci,1);
+      t.rows.forEach(r=>r.splice(ci,1));
+      saveData(); renderTableView();
+    });
+    th.appendChild(delCol);
+    headRow.appendChild(th);
+  });
+  headRow.appendChild(document.createElement("th"));
+  thead.appendChild(headRow);
+  table.appendChild(thead);
+
+  const tbody = document.createElement("tbody");
+  t.rows.forEach((row, ri)=>{
+    const tr = document.createElement("tr");
+    t.columns.forEach((_, ci)=>{
+      const td = document.createElement("td");
+      const input = document.createElement("input");
+      input.type = "text";
+      input.value = row[ci] || "";
+      input.addEventListener("input", ()=>{
+        row[ci] = input.value;
+        saveData();
+      });
+      td.appendChild(input);
+      tr.appendChild(td);
+    });
+    const delTd = document.createElement("td");
+    delTd.className = "row-del-cell";
+    const delBtn = document.createElement("button");
+    delBtn.className = "row-del";
+    delBtn.textContent = "×";
+    delBtn.title = "Remove row";
+    delBtn.addEventListener("click", ()=>{
+      t.rows.splice(ri,1);
+      saveData(); renderTableView();
+    });
+    delTd.appendChild(delBtn);
+    tr.appendChild(delTd);
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  gridWrap.appendChild(table);
+  wrap.appendChild(gridWrap);
+
+  const actions = document.createElement("div");
+  actions.className = "grid-actions";
+  const addRowBtn = document.createElement("button");
+  addRowBtn.className = "btn ghost";
+  addRowBtn.textContent = "Add row";
+  addRowBtn.addEventListener("click", ()=>{
+    t.rows.push(new Array(t.columns.length).fill(""));
+    saveData(); renderTableView();
+  });
+  actions.appendChild(addRowBtn);
+  wrap.appendChild(actions);
+
+  const colAddRow = document.createElement("div");
+  colAddRow.className = "col-add-row";
+  const colInput = document.createElement("input");
+  colInput.type = "text";
+  colInput.placeholder = "New column name";
+  const colBtn = document.createElement("button");
+  colBtn.className = "btn ghost";
+  colBtn.textContent = "Add column";
+  colBtn.addEventListener("click", ()=>{
+    const name = colInput.value.trim();
+    if(!name) return;
+    t.columns.push(name);
+    t.rows.forEach(r=>r.push(""));
+    colInput.value = "";
+    saveData(); renderTableView();
+  });
+  colAddRow.appendChild(colInput);
+  colAddRow.appendChild(colBtn);
+  wrap.appendChild(colAddRow);
+
+  el.innerHTML = "";
+  el.appendChild(wrap);
+}
+
+document.getElementById("new-table-add").addEventListener("click", ()=>{
+  const name = document.getElementById("new-table-name").value.trim();
+  const colsRaw = document.getElementById("new-table-cols").value.trim();
+  if(!name){ toast("Give the table a name"); return; }
+  const columns = colsRaw ? colsRaw.split(",").map(c=>c.trim()).filter(Boolean) : ["Column 1"];
+  const t = { id: uid(), name, columns, rows: [] };
+  data.tables.push(t);
+  activeTableId = t.id;
+  saveData();
+  document.getElementById("new-table-name").value = "";
+  document.getElementById("new-table-cols").value = "";
+  renderTablePicker();
+  toast("Table created");
+});
+
+/* ---------------- todo ---------------- */
+const POINTS_PER_TASK = 10;
+let todoFilter = "active";
+
+function startOfWeek(d){
+  const x = new Date(d);
+  const day = (x.getDay()+6)%7; // Mon=0
+  x.setHours(0,0,0,0);
+  x.setDate(x.getDate()-day);
+  return x;
+}
+function startOfMonth(d){
+  const x = new Date(d.getFullYear(), d.getMonth(), 1);
+  x.setHours(0,0,0,0);
+  return x;
+}
+
+function renderTodo(){
+  renderTodoStats();
+  renderTodoList();
+  renderWeekChart();
+  renderMonthChart();
+}
+
+function renderTodoStats(){
+  const now = new Date();
+  const wStart = startOfWeek(now).getTime();
+  const mStart = startOfMonth(now).getTime();
+  const total = data.todos.filter(t=>t.done).length * POINTS_PER_TASK;
+  const week = data.todos.filter(t=>t.done && t.doneAt>=wStart).length * POINTS_PER_TASK;
+  const month = data.todos.filter(t=>t.done && t.doneAt>=mStart).length * POINTS_PER_TASK;
+  document.getElementById("stat-total").textContent = total;
+  document.getElementById("stat-week").textContent = week;
+  document.getElementById("stat-month").textContent = month;
+}
+
+function renderTodoList(){
+  const el = document.getElementById("todo-list");
+  let items = [...data.todos].sort((a,b)=> (a.due||"9999").localeCompare(b.due||"9999") || b.createdAt-a.createdAt);
+  if(todoFilter==="active") items = items.filter(t=>!t.done);
+  if(todoFilter==="done") items = items.filter(t=>t.done);
+
+  el.innerHTML = "";
+  if(items.length===0){
+    el.innerHTML = `<div class="empty">Nothing here.</div>`;
+    return;
+  }
+  const todayStr = new Date().toISOString().slice(0,10);
+  items.forEach(t=>{
+    const row = document.createElement("div");
+    row.className = "todo-item" + (t.done ? " done" : "");
+    const overdue = t.due && !t.done && t.due < todayStr;
+    row.innerHTML = `
+      <input type="checkbox" ${t.done ? "checked" : ""}>
+      <div class="todo-text">${escapeHtml(t.text)}</div>
+      ${t.due ? `<div class="todo-due${overdue ? " overdue" : ""}">${t.due}</div>` : ""}
+      <button class="del" title="Delete">×</button>`;
+    row.querySelector('input[type="checkbox"]').addEventListener("change", (e)=>{
+      t.done = e.target.checked;
+      t.doneAt = t.done ? Date.now() : null;
+      saveData(); renderTodo();
+    });
+    row.querySelector(".del").addEventListener("click", ()=>{
+      data.todos = data.todos.filter(x=>x.id!==t.id);
+      saveData(); renderTodo();
+    });
+    el.appendChild(row);
+  });
+}
+
+document.getElementById("todo-add").addEventListener("click", ()=>{
+  const text = document.getElementById("todo-text").value.trim();
+  const due = document.getElementById("todo-due").value;
+  if(!text){ toast("Write the task first"); return; }
+  data.todos.push({ id: uid(), text, due: due || null, done:false, doneAt:null, createdAt: Date.now() });
+  saveData();
+  document.getElementById("todo-text").value = "";
+  document.getElementById("todo-due").value = "";
+  renderTodo();
+  toast("Task added");
+});
+
+document.querySelectorAll("#todo-filters button").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll("#todo-filters button").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    todoFilter = b.dataset.filter;
+    renderTodoList();
+  });
+});
+
+function renderWeekChart(){
+  const el = document.getElementById("week-chart");
+  const wStart = startOfWeek(new Date());
+  const counts = [];
+  let createdCount = 0, doneCount = 0;
+  for(let i=0;i<7;i++){
+    const dayStart = new Date(wStart); dayStart.setDate(wStart.getDate()+i);
+    const dayEnd = new Date(dayStart); dayEnd.setDate(dayStart.getDate()+1);
+    const c = data.todos.filter(t=>t.done && t.doneAt>=dayStart.getTime() && t.doneAt<dayEnd.getTime()).length;
+    counts.push(c);
+  }
+  createdCount = data.todos.filter(t=>t.createdAt>=wStart.getTime()).length;
+  doneCount = data.todos.filter(t=>t.done && t.doneAt>=wStart.getTime()).length;
+  const max = Math.max(1, ...counts);
+  const labels = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+  el.innerHTML = counts.map((c,i)=>`
+    <div class="bar-col">
+      <div class="bar-val">${c || ""}</div>
+      <div class="bar" style="height:${(c/max)*80}px;"></div>
+      <div class="bar-label">${labels[i]}</div>
+    </div>`).join("");
+  const rate = createdCount>0 ? Math.round((doneCount/createdCount)*100) : (doneCount>0 ? 100 : 0);
+  document.getElementById("week-rate").textContent = createdCount>0 || doneCount>0 ? `${rate}% done` : "";
+}
+
+function renderMonthChart(){
+  const el = document.getElementById("month-chart");
+  const now = new Date();
+  const mStart = startOfMonth(now);
+  const daysInMonth = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
+  const weekBuckets = [0,0,0,0,0];
+  for(let d=1; d<=daysInMonth; d++){
+    const day = new Date(now.getFullYear(), now.getMonth(), d);
+    const dayEnd = new Date(now.getFullYear(), now.getMonth(), d+1);
+    const c = data.todos.filter(t=>t.done && t.doneAt>=day.getTime() && t.doneAt<dayEnd.getTime()).length;
+    const bucket = Math.min(4, Math.floor((d-1)/7));
+    weekBuckets[bucket] += c;
+  }
+  const max = Math.max(1, ...weekBuckets);
+  const createdCount = data.todos.filter(t=>t.createdAt>=mStart.getTime()).length;
+  const doneCount = data.todos.filter(t=>t.done && t.doneAt>=mStart.getTime()).length;
+  el.innerHTML = weekBuckets.map((c,i)=>`
+    <div class="bar-col month">
+      <div class="bar-val">${c || ""}</div>
+      <div class="bar" style="height:${(c/max)*80}px;"></div>
+      <div class="bar-label">Wk ${i+1}</div>
+    </div>`).join("");
+  const rate = createdCount>0 ? Math.round((doneCount/createdCount)*100) : (doneCount>0 ? 100 : 0);
+  document.getElementById("month-rate").textContent = createdCount>0 || doneCount>0 ? `${rate}% done` : "";
+}
+
+/* ---------------- today ---------------- */
+function renderToday(){
+  document.getElementById("today-date").textContent =
+    new Date().toLocaleDateString(undefined,{weekday:"long", month:"long", day:"numeric"});
+  const day = DAYS[(new Date().getDay()+6)%7];
+  const el = document.getElementById("today-slots");
+  const slots = [...data.timetable[day]].sort((a,b)=>a.start.localeCompare(b.start));
+  el.innerHTML = "";
+  if(slots.length===0){
+    el.innerHTML = `<div class="empty">Nothing scheduled today. Add slots in the Timetable tab.</div>`;
+  }else{
+    slots.forEach(s=>{
+      const row = document.createElement("div");
+      row.className = "slot";
+      row.innerHTML = `
+        <div class="time">${s.start}–${s.end}</div>
+        <div class="body">
+          <div class="subj">${escapeHtml(s.subject)}</div>
+          ${s.topic ? `<div class="topic">${escapeHtml(s.topic)}</div>` : ""}
+        </div>`;
+      el.appendChild(row);
+    });
+  }
+
+  const notesEl = document.getElementById("today-notes");
+  const recent = [...data.notes].sort((a,b)=>b.ts-a.ts).slice(0,3);
+  notesEl.innerHTML = recent.length===0
+    ? `<div class="empty">No notes yet — add one from the Notes tab.</div>`
+    : recent.map(n=>`
+        <div class="entry">
+          <div class="entry-head">
+            <span class="entry-tag">${escapeHtml(n.subject||"general")}</span>
+            <span class="entry-date">${new Date(n.ts).toLocaleDateString()}</span>
+          </div>
+          <div class="entry-title">${escapeHtml(n.title||"Untitled")}</div>
+        </div>`).join("");
+}
+
+function escapeHtml(s){
+  return (s||"").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+/* ---------------- local backup ---------------- */
+document.getElementById("export-json").addEventListener("click", ()=>{
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `desk-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  toast("Backup downloaded");
+});
+document.getElementById("import-json").addEventListener("change", (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const incoming = JSON.parse(reader.result);
+      data = Object.assign({timetable:{}, notes:[], log:[], tables:[], todos:[]}, incoming);
+      DAYS.forEach(d => { if(!data.timetable[d]) data.timetable[d] = []; });
+      if(!data.tables) data.tables = [];
+  if(!data.todos) data.todos = [];
+      saveData();
+      renderDayTabs(); renderSlots(); renderNotes(); renderLog(); renderToday(); renderTablePicker(); renderTodo();
+      toast("Backup restored");
+    }catch(err){ toast("That file couldn't be read"); }
+  };
+  reader.readAsText(file);
+});
+document.getElementById("wipe-all").addEventListener("click", ()=>{
+  if(!confirm("This erases every note, log entry, and timetable slot on this device. Continue?")) return;
+  localStorage.removeItem(STORE_KEY);
+  data = loadData();
+  DAYS.forEach(d => { if(!data.timetable[d]) data.timetable[d] = []; });
+  if(!data.tables) data.tables = [];
+  if(!data.todos) data.todos = [];
+  renderDayTabs(); renderSlots(); renderNotes(); renderLog(); renderToday(); renderTablePicker(); renderTodo();
+  toast("All local data erased");
+});
+
+/* ---------------- google drive sync ----------------
+   Uses Google Identity Services (token client) + Drive API v3.
+   Stores one file, "desk-data.json", in the app's private
+   appDataFolder space (invisible in the user's normal Drive list).
+------------------------------------------------------- */
+const DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.appdata";
+let gisToken = null;
+let driveFileId = null;
+
+const driveConnectBtn = document.getElementById("drive-connect");
+const driveSaveBtn = document.getElementById("drive-save");
+const driveLoadBtn = document.getElementById("drive-load");
+const driveStatus = document.getElementById("drive-status");
+const driveDot = document.getElementById("drive-dot");
+const driveHint = document.getElementById("drive-hint");
+
+function initDriveUI(){
+  if(!CONFIG.GOOGLE_CLIENT_ID){
+    driveHint.textContent = "Add your Google OAuth Client ID in the CONFIG block of index.html to enable this.";
+    driveConnectBtn.disabled = true;
+    driveConnectBtn.style.opacity = 0.5;
+    driveConnectBtn.style.cursor = "not-allowed";
+    return;
+  }
+  driveHint.textContent = "Saves one private backup file to your Drive's app-data space — not visible in your normal Drive file list.";
+  const script = document.createElement("script");
+  script.src = "https://accounts.google.com/gsi/client";
+  script.async = true;
+  document.head.appendChild(script);
+}
+initDriveUI();
+
+driveConnectBtn.addEventListener("click", ()=>{
+  if(!window.google){ toast("Still loading Google's library — try again in a second"); return; }
+  const client = google.accounts.oauth2.initTokenClient({
+    client_id: CONFIG.GOOGLE_CLIENT_ID,
+    scope: DRIVE_SCOPE,
+    callback: (resp)=>{
+      if(resp.error){ toast("Connection failed: " + resp.error); return; }
+      gisToken = resp.access_token;
+      driveStatus.textContent = "Connected";
+      driveDot.classList.add("on");
+      driveConnectBtn.style.display = "none";
+      driveSaveBtn.style.display = "inline-block";
+      driveLoadBtn.style.display = "inline-block";
+      toast("Google Drive connected");
+    }
+  });
+  client.requestAccessToken();
+});
+
+async function driveFindFile(){
+  const res = await fetch(
+    "https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name='desk-data.json'&fields=files(id)",
+    { headers: { Authorization: "Bearer " + gisToken } }
+  );
+  const json = await res.json();
+  return (json.files && json.files[0]) ? json.files[0].id : null;
+}
+
+driveSaveBtn.addEventListener("click", async ()=>{
+  try{
+    if(!driveFileId) driveFileId = await driveFindFile();
+    const metadata = { name: "desk-data.json", parents: driveFileId ? undefined : ["appDataFolder"] };
+    const boundary = "deskBoundary";
+    const body =
+      `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}\r\n` +
+      `--${boundary}\r\nContent-Type: application/json\r\n\r\n${JSON.stringify(data)}\r\n--${boundary}--`;
+    const url = driveFileId
+      ? `https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=multipart`
+      : `https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart`;
+    const res = await fetch(url, {
+      method: driveFileId ? "PATCH" : "POST",
+      headers: { Authorization: "Bearer " + gisToken, "Content-Type": `multipart/related; boundary=${boundary}` },
+      body
+    });
+    const json = await res.json();
+    if(json.id) driveFileId = json.id;
+    toast("Saved to Google Drive");
+  }catch(e){ toast("Save to Drive failed — check your connection"); }
+});
+
+driveLoadBtn.addEventListener("click", async ()=>{
+  try{
+    if(!driveFileId) driveFileId = await driveFindFile();
+    if(!driveFileId){ toast("No backup found on Drive yet"); return; }
+    const res = await fetch(
+      `https://www.googleapis.com/drive/v3/files/${driveFileId}?alt=media`,
+      { headers: { Authorization: "Bearer " + gisToken } }
+    );
+    const incoming = await res.json();
+    data = Object.assign({timetable:{}, notes:[], log:[], tables:[], todos:[]}, incoming);
+    DAYS.forEach(d => { if(!data.timetable[d]) data.timetable[d] = []; });
+    if(!data.tables) data.tables = [];
+  if(!data.todos) data.todos = [];
+    saveData();
+    renderDayTabs(); renderSlots(); renderNotes(); renderLog(); renderToday(); renderTablePicker(); renderTodo();
+    toast("Loaded from Google Drive");
+  }catch(e){ toast("Load from Drive failed"); }
+});
+
+/* ---------------- init ---------------- */
+renderDayTabs();
+renderSlots();
+renderNotes();
+renderLog();
+renderToday();
+renderTablePicker();
+renderTodo();
+</script>
+</body>
+</html>
