@@ -11,7 +11,7 @@
     --bg-inset: #12141d;
     --line: #2c3142;
     --line-soft: #23273580;
-    --ink: #e8e6df;
+    --ink: #ffffff;
     --ink-dim: #9a9db0;
     --ink-faint: #656980;
     --amber: #e8a672;
@@ -140,13 +140,15 @@
   .table-head-row h3{font-family:var(--serif);font-style:italic;font-weight:400;font-size:19px;margin:0;color:var(--ink);}
   .grid-wrap{overflow-x:auto;}
   table.datagrid{border-collapse:collapse;width:100%;font-size:13.5px;}
-  table.datagrid th, table.datagrid td{border:1px solid var(--line);padding:0;min-width:120px;}
-  table.datagrid th{background:var(--bg-inset);color:var(--ink-dim);font-weight:500;text-align:left;padding:8px 10px;font-size:12.5px;white-space:nowrap;}
-  table.datagrid th .col-del{all:unset;cursor:pointer;color:var(--ink-faint);float:right;padding:0 2px;}
+  table.datagrid th, table.datagrid td{border:1px solid var(--line);padding:0;}
+  table.datagrid{table-layout:auto;}
+  table.datagrid th{background:var(--bg-inset);color:#ffffff;font-weight:500;text-align:left;padding:8px 14px;font-size:12.5px;white-space:nowrap;}
+  table.datagrid th .col-del{all:unset;cursor:pointer;color:var(--ink-faint);float:right;padding:0 2px;margin-left:8px;}
   table.datagrid th .col-del:hover{color:var(--danger);}
-  table.datagrid td input{border:none;background:transparent;border-radius:0;padding:8px 10px;width:100%;font-size:13.5px;}
+  table.datagrid th.row-del-head{border:none;background:transparent;min-width:34px;width:34px;padding:0;}
+  table.datagrid td input{border:none;background:transparent;border-radius:0;padding:8px 14px;width:auto;min-width:70px;font-size:13.5px;color:#ffffff;}
   table.datagrid td input:focus{outline:none;background:var(--line-soft);}
-  table.datagrid td.row-del-cell{min-width:32px;width:32px;text-align:center;}
+  table.datagrid td.row-del-cell{min-width:34px;width:34px;text-align:center;border:none;background:transparent;}
   table.datagrid .row-del{all:unset;cursor:pointer;color:var(--ink-faint);padding:6px;}
   table.datagrid .row-del:hover{color:var(--danger);}
   .grid-actions{display:flex;gap:10px;margin-top:12px;}
@@ -164,7 +166,8 @@
   .filter-tabs button{all:unset;cursor:pointer;padding:6px 13px;font-size:12.5px;border:1px solid var(--line);border-radius:20px;color:var(--ink-faint);}
   .filter-tabs button.active{color:#1a1108;background:var(--amber);border-color:var(--amber);}
 
-  .todo-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line-soft);}
+  .todo-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line-soft);cursor:pointer;transition:background .12s;}
+  .todo-item:hover{background:var(--line-soft);}
   .todo-item:last-child{border-bottom:none;}
   .todo-item input[type="checkbox"]{width:17px;height:17px;flex-shrink:0;accent-color:var(--amber);cursor:pointer;}
   .todo-item .todo-text{flex:1;font-size:14px;color:var(--ink);cursor:pointer;overflow-wrap:break-word;word-break:break-word;}
@@ -185,7 +188,8 @@
   .bar-col .bar-label{font-size:11px;color:var(--ink-faint);font-family:var(--mono);}
 
   /* ---------- notes / log ---------- */
-  .entry{padding:16px 0;border-bottom:1px solid var(--line-soft);}
+  .entry{padding:16px 0;border-bottom:1px solid var(--line-soft);cursor:pointer;transition:background .12s;}
+  .entry:hover{background:var(--line-soft);}
   .entry:last-child{border-bottom:none;}
   .entry-click{cursor:pointer;}
   .entry-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:6px;}
@@ -198,7 +202,8 @@
   .entry-actions button:hover{color:var(--ink);}
 
   /* ---------- work / progress ---------- */
-  .work-item{padding:14px 0;border-bottom:1px solid var(--line-soft);}
+  .work-item{padding:14px 0;border-bottom:1px solid var(--line-soft);cursor:pointer;transition:background .12s;}
+  .work-item:hover{background:var(--line-soft);}
   .work-item:last-child{border-bottom:none;}
   .work-title{font-size:14.5px;color:var(--ink);cursor:pointer;margin-bottom:6px;overflow-wrap:break-word;word-break:break-word;}
   .work-title:hover{color:var(--amber);}
@@ -217,7 +222,7 @@
   /* ---------- modal ---------- */
   .modal-overlay{position:fixed;inset:0;background:rgba(10,11,16,.72);display:none;align-items:center;justify-content:center;z-index:500;padding:24px;}
   .modal-overlay.show{display:flex;}
-  .modal-box{background:var(--bg-raised);border:1px solid var(--line);border-radius:10px;width:100%;max-width:640px;max-height:88vh;overflow-y:auto;padding:26px 28px 22px;transform:scale(.94);opacity:0;transition:transform .18s ease,opacity .18s ease;}
+  .modal-box{background:var(--bg-raised);border:1px solid var(--line);border-radius:10px;width:min(94vw,880px);height:90vh;overflow-y:auto;padding:32px 36px 26px;transform:scale(.92);opacity:0;transition:transform .22s cubic-bezier(.2,.8,.3,1),opacity .2s ease;}
   .modal-overlay.show .modal-box{transform:scale(1);opacity:1;}
   .modal-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
   .modal-tag{font-family:var(--mono);font-size:11px;color:var(--teal);border:1px solid #2b3f3c;padding:2px 8px;border-radius:20px;}
@@ -260,7 +265,7 @@
     nav{flex-direction:row;}
     .side-foot,.clock{display:none;}
     main{padding:24px 18px 50px;}
-    .modal-box{max-height:92vh;padding:20px 18px 18px;}
+    .modal-box{width:100vw;height:100vh;max-height:100vh;border-radius:0;padding:20px 18px 18px;}
   }
 </style>
 </head>
@@ -305,35 +310,16 @@
       <h1>Today</h1>
       <p class="sub" id="today-date"></p>
 
-      <div class="card">
-        <div class="analytics-head"><h3>Timetable</h3></div>
-        <div id="today-slots"></div>
+      <div class="filter-tabs" id="today-tabs">
+        <button data-cat="timetable" class="active">Timetable</button>
+        <button data-cat="notes">Notes</button>
+        <button data-cat="log">Learning log</button>
+        <button data-cat="tables">Tables</button>
+        <button data-cat="todo">To-do</button>
+        <button data-cat="work">Progress</button>
       </div>
 
-      <div class="card">
-        <div class="analytics-head"><h3>Notes</h3><button class="btn ghost" data-jump="notes">Open notes</button></div>
-        <div id="today-notes"></div>
-      </div>
-
-      <div class="card">
-        <div class="analytics-head"><h3>Learning log</h3><button class="btn ghost" data-jump="log">Open log</button></div>
-        <div id="today-log"></div>
-      </div>
-
-      <div class="card">
-        <div class="analytics-head"><h3>Tables</h3><button class="btn ghost" data-jump="tables">Open tables</button></div>
-        <div id="today-tables"></div>
-      </div>
-
-      <div class="card">
-        <div class="analytics-head"><h3>To-do</h3><button class="btn ghost" data-jump="todo">Open to-do</button></div>
-        <div id="today-todos"></div>
-      </div>
-
-      <div class="card">
-        <div class="analytics-head"><h3>Progress</h3><button class="btn ghost" data-jump="work">Open progress</button></div>
-        <div id="today-work"></div>
-      </div>
+      <div class="card" id="today-content"></div>
     </section>
 
     <!-- TIMETABLE -->
@@ -642,6 +628,11 @@ function normalizeData(d){
   if(!d.tables) d.tables = [];
   if(!d.todos) d.todos = [];
   if(!d.work) d.work = [];
+  d.todos.forEach(t=>{
+    if(!t.status) t.status = t.done ? "done" : "pending";
+    if(t.remark===undefined) t.remark = "";
+    if(t.doneAt===undefined) t.doneAt = t.status==="done" ? (t.doneAt||Date.now()) : null;
+  });
   return d;
 }
 function loadData(){
@@ -682,6 +673,22 @@ function stripTags(html){
 function refreshEverything(){
   renderDayTabs(); renderSlots(); renderNotes(); renderLog(); renderToday();
   renderTablePicker(); renderTodo(); renderWork();
+}
+function autosizeInput(input){
+  let measurer = document.getElementById("cell-measurer");
+  if(!measurer){
+    measurer = document.createElement("span");
+    measurer.id = "cell-measurer";
+    measurer.style.position = "absolute";
+    measurer.style.left = "-9999px";
+    measurer.style.top = "0";
+    measurer.style.whiteSpace = "pre";
+    measurer.style.fontSize = "13.5px";
+    measurer.style.fontFamily = "Inter, -apple-system, 'Segoe UI', sans-serif";
+    document.body.appendChild(measurer);
+  }
+  measurer.textContent = input.value || input.placeholder || "";
+  input.style.width = Math.max(70, measurer.offsetWidth + 28) + "px";
 }
 
 /* ---------------- rich text toolbar ---------------- */
@@ -959,7 +966,7 @@ function renderTableView(){
     th.appendChild(delCol);
     headRow.appendChild(th);
   });
-  headRow.appendChild(document.createElement("th"));
+  headRow.appendChild(Object.assign(document.createElement("th"), {className:"row-del-head"}));
   thead.appendChild(headRow);
   table.appendChild(thead);
 
@@ -970,7 +977,8 @@ function renderTableView(){
       const td = document.createElement("td");
       const input = document.createElement("input");
       input.type = "text"; input.value = row[ci] || "";
-      input.addEventListener("input", ()=>{ row[ci] = input.value; saveData(); });
+      autosizeInput(input);
+      input.addEventListener("input", ()=>{ row[ci] = input.value; autosizeInput(input); saveData(); });
       td.appendChild(input);
       tr.appendChild(td);
     });
@@ -1043,42 +1051,74 @@ function renderTodoStats(){
   const now = new Date();
   const wStart = startOfWeek(now).getTime();
   const mStart = startOfMonth(now).getTime();
-  document.getElementById("stat-total").textContent = data.todos.filter(t=>t.done).length * POINTS_PER_TASK;
-  document.getElementById("stat-week").textContent = data.todos.filter(t=>t.done && t.doneAt>=wStart).length * POINTS_PER_TASK;
-  document.getElementById("stat-month").textContent = data.todos.filter(t=>t.done && t.doneAt>=mStart).length * POINTS_PER_TASK;
+  document.getElementById("stat-total").textContent = data.todos.filter(t=>t.status==="done").length * POINTS_PER_TASK;
+  document.getElementById("stat-week").textContent = data.todos.filter(t=>t.status==="done" && t.doneAt>=wStart).length * POINTS_PER_TASK;
+  document.getElementById("stat-month").textContent = data.todos.filter(t=>t.status==="done" && t.doneAt>=mStart).length * POINTS_PER_TASK;
+}
+
+function setTodoStatus(id, status){
+  const t = data.todos.find(x=>x.id===id);
+  if(!t) return;
+  t.status = status;
+  t.doneAt = status==="done" ? Date.now() : null;
+  saveData();
+  renderTodo(); renderToday();
 }
 
 function todoRowHtml(t, todayStr){
-  const overdue = t.due && !t.done && t.due < todayStr;
+  const overdue = t.due && t.status!=="done" && t.due < todayStr;
+  const remarkId = "todo-remark-" + t.id;
   return `
-    <input type="checkbox" ${t.done ? "checked" : ""}>
-    <div class="todo-text">${escapeHtml(t.text)}</div>
-    ${t.due ? `<div class="todo-due${overdue ? " overdue" : ""}">${t.due}</div>` : ""}
-    <button class="del" title="Delete">×</button>`;
+    <div class="todo-main" style="display:flex;align-items:center;gap:12px;flex:1;flex-wrap:wrap;">
+      <div class="todo-text" style="flex:1;min-width:140px;">${escapeHtml(t.text)}</div>
+      ${t.due ? `<div class="todo-due${overdue ? " overdue" : ""}">${t.due}</div>` : ""}
+      <div class="status-btns">
+        <button class="pending ${t.status==='pending'?'active':''}" data-s="pending">Pending</button>
+        <button class="semi ${t.status==='semi'?'active':''}" data-s="semi">Semi-done</button>
+        <button class="done ${t.status==='done'?'active':''}" data-s="done">Done</button>
+      </div>
+      <button class="del" title="Delete">×</button>
+    </div>
+    ${t.status==='semi' ? `<div class="remark-box" style="width:100%;margin-top:10px;">
+        <label>What's left?</label>
+        <div id="${remarkId}-toolbar"></div>
+        <div class="rt-editable" id="${remarkId}" contenteditable="true" data-placeholder="e.g. Just the last two practice problems">${t.remark||""}</div>
+      </div>` : ""}`;
 }
 
 function renderTodoList(){
   const el = document.getElementById("todo-list");
   let items = [...data.todos].sort((a,b)=> (a.due||"9999").localeCompare(b.due||"9999") || b.createdAt-a.createdAt);
-  if(todoFilter==="active") items = items.filter(t=>!t.done);
-  if(todoFilter==="done") items = items.filter(t=>t.done);
+  if(todoFilter==="active") items = items.filter(t=>t.status!=="done");
+  if(todoFilter==="done") items = items.filter(t=>t.status==="done");
   el.innerHTML = "";
   if(items.length===0){ el.innerHTML = `<div class="empty">Nothing here.</div>`; return; }
   const todayStr = new Date().toISOString().slice(0,10);
   items.forEach(t=>{
     const row = document.createElement("div");
-    row.className = "todo-item" + (t.done ? " done" : "");
+    row.className = "todo-item" + (t.status==="done" ? " done" : "");
+    row.style.flexDirection = "column";
+    row.style.alignItems = "stretch";
     row.innerHTML = todoRowHtml(t, todayStr);
-    row.querySelector('input[type="checkbox"]').addEventListener("change", (e)=>{
-      t.done = e.target.checked; t.doneAt = t.done ? Date.now() : null;
-      saveData(); renderTodo(); renderToday();
+    row.addEventListener("click", (e)=>{
+      if(e.target.closest("button, .rt-editable, .rt-toolbar")) return;
+      openModal("todo", t.id);
     });
-    row.querySelector(".todo-text").addEventListener("click", ()=>openModal("todo", t.id));
-    row.querySelector(".del").addEventListener("click", ()=>{
+    row.querySelectorAll(".status-btns button").forEach(b=>{
+      b.addEventListener("click", (e)=>{ e.stopPropagation(); setTodoStatus(t.id, b.dataset.s); });
+    });
+    row.querySelector(".del").addEventListener("click", (e)=>{
+      e.stopPropagation();
       if(!confirm("Delete this task?")) return;
       data.todos = data.todos.filter(x=>x.id!==t.id);
       saveData(); renderTodo(); renderToday();
     });
+    const remarkEl = row.querySelector(".rt-editable");
+    if(remarkEl){
+      document.getElementById(remarkEl.id + "-toolbar").innerHTML = buildRichToolbar(remarkEl.id);
+      remarkEl.addEventListener("click", (e)=>e.stopPropagation());
+      remarkEl.addEventListener("input", ()=>{ t.remark = remarkEl.innerHTML; saveData(); });
+    }
     el.appendChild(row);
   });
 }
@@ -1087,7 +1127,7 @@ document.getElementById("todo-add").addEventListener("click", ()=>{
   const text = document.getElementById("todo-text").value.trim();
   const due = document.getElementById("todo-due").value;
   if(!text){ toast("Write the task first"); return; }
-  data.todos.push({ id: uid(), text, due: due || null, done:false, doneAt:null, createdAt: Date.now() });
+  data.todos.push({ id: uid(), text, due: due || null, status:"pending", remark:"", doneAt:null, createdAt: Date.now() });
   saveData();
   document.getElementById("todo-text").value = "";
   document.getElementById("todo-due").value = "";
@@ -1110,10 +1150,10 @@ function renderWeekChart(){
   for(let i=0;i<7;i++){
     const dayStart = new Date(wStart); dayStart.setDate(wStart.getDate()+i);
     const dayEnd = new Date(dayStart); dayEnd.setDate(dayStart.getDate()+1);
-    counts.push(data.todos.filter(t=>t.done && t.doneAt>=dayStart.getTime() && t.doneAt<dayEnd.getTime()).length);
+    counts.push(data.todos.filter(t=>t.status==="done" && t.doneAt>=dayStart.getTime() && t.doneAt<dayEnd.getTime()).length);
   }
   const createdCount = data.todos.filter(t=>t.createdAt>=wStart.getTime()).length;
-  const doneCount = data.todos.filter(t=>t.done && t.doneAt>=wStart.getTime()).length;
+  const doneCount = data.todos.filter(t=>t.status==="done" && t.doneAt>=wStart.getTime()).length;
   const max = Math.max(1, ...counts);
   const labels = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
   el.innerHTML = counts.map((c,i)=>`
@@ -1131,12 +1171,12 @@ function renderMonthChart(){
   for(let d=1; d<=daysInMonth; d++){
     const day = new Date(now.getFullYear(), now.getMonth(), d);
     const dayEnd = new Date(now.getFullYear(), now.getMonth(), d+1);
-    const c = data.todos.filter(t=>t.done && t.doneAt>=day.getTime() && t.doneAt<dayEnd.getTime()).length;
+    const c = data.todos.filter(t=>t.status==="done" && t.doneAt>=day.getTime() && t.doneAt<dayEnd.getTime()).length;
     weekBuckets[Math.min(4, Math.floor((d-1)/7))] += c;
   }
   const max = Math.max(1, ...weekBuckets);
   const createdCount = data.todos.filter(t=>t.createdAt>=mStart.getTime()).length;
-  const doneCount = data.todos.filter(t=>t.done && t.doneAt>=mStart.getTime()).length;
+  const doneCount = data.todos.filter(t=>t.status==="done" && t.doneAt>=mStart.getTime()).length;
   el.innerHTML = weekBuckets.map((c,i)=>`
     <div class="bar-col month"><div class="bar-val">${c || ""}</div><div class="bar" style="height:${(c/max)*80}px;"></div><div class="bar-label">Wk ${i+1}</div></div>`).join("");
   const rate = createdCount>0 ? Math.round((doneCount/createdCount)*100) : (doneCount>0 ? 100 : 0);
@@ -1160,6 +1200,7 @@ function renderWorkList(){
   const active = data.work.filter(w=>w.status!=="done").sort((a,b)=>b.createdAt-a.createdAt);
   el.innerHTML = active.length===0 ? `<div class="empty">No work items yet.</div>` : "";
   active.forEach(w=>{
+    const remarkId = "work-remark-" + w.id;
     const div = document.createElement("div");
     div.className = "work-item";
     div.innerHTML = `
@@ -1170,13 +1211,16 @@ function renderWorkList(){
         <button class="semi ${w.status==='semi'?'active':''}" data-s="semi">Semi-done</button>
         <button class="done ${w.status==='done'?'active':''}" data-s="done">Done</button>
       </div>
-      ${w.status==='semi' ? `<div class="remark-box"><label>What's left?</label><textarea class="remark-input" placeholder="e.g. Just need to test the checkout flow">${escapeHtml(w.remark||"")}</textarea></div>` : ""}`;
-    div.querySelector(".work-title").addEventListener("click", ()=>openModal("work", w.id));
+      ${w.status==='semi' ? `<div class="remark-box"><label>What's left?</label><div id="${remarkId}-toolbar"></div><div class="rt-editable" id="${remarkId}" contenteditable="true" data-placeholder="e.g. Just need to test the checkout flow">${w.remark||""}</div></div>` : ""}`;
+    attachRowOpen(div, "work", w.id);
     div.querySelectorAll(".status-btns button").forEach(b=>{
-      b.addEventListener("click", ()=> setWorkStatus(w.id, b.dataset.s));
+      b.addEventListener("click", (e)=>{ e.stopPropagation(); setWorkStatus(w.id, b.dataset.s); });
     });
-    const remarkInput = div.querySelector(".remark-input");
-    if(remarkInput){ remarkInput.addEventListener("input", ()=>{ w.remark = remarkInput.value; saveData(); }); }
+    const remarkEl = div.querySelector(".rt-editable");
+    if(remarkEl){
+      document.getElementById(remarkEl.id + "-toolbar").innerHTML = buildRichToolbar(remarkEl.id);
+      remarkEl.addEventListener("input", ()=>{ w.remark = remarkEl.innerHTML; saveData(); });
+    }
     el.appendChild(div);
   });
 
@@ -1286,71 +1330,134 @@ document.querySelectorAll(".lang-toggle button").forEach(b=>{
 });
 
 /* ---------------- today ---------------- */
+let todayCategory = "timetable";
+document.querySelectorAll("#today-tabs button").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll("#today-tabs button").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    todayCategory = b.dataset.cat;
+    renderToday();
+  });
+});
+
+function attachRowOpen(row, type, id){
+  row.addEventListener("click", (e)=>{
+    if(e.target.closest("button, input, textarea, select, .rt-editable, .rt-toolbar, .status-btns")) return;
+    openModal(type, id);
+  });
+}
+
 function renderToday(){
   document.getElementById("today-date").textContent = new Date().toLocaleDateString(undefined,{weekday:"long", month:"long", day:"numeric"});
+  const el = document.getElementById("today-content");
   const day = DAYS[(new Date().getDay()+6)%7];
 
-  const slotsEl = document.getElementById("today-slots");
-  const slots = [...data.timetable[day]].sort((a,b)=>a.start.localeCompare(b.start));
-  slotsEl.innerHTML = "";
-  if(slots.length===0){
-    slotsEl.innerHTML = `<div class="empty">Nothing scheduled today. Add slots in the Timetable tab.</div>`;
-  }else{
+  if(todayCategory==="timetable"){
+    const slots = [...data.timetable[day]].sort((a,b)=>a.start.localeCompare(b.start));
+    el.innerHTML = "";
+    if(slots.length===0){ el.innerHTML = `<div class="empty">Nothing scheduled today. Add slots in the Timetable tab.</div>`; return; }
     slots.forEach(s=>{
       const row = document.createElement("div");
       row.className = "slot";
       row.innerHTML = slotRowHtml(s);
       row.querySelector(".del").style.display = "none";
-      row.addEventListener("click", ()=>openModal("slot", s.id));
-      slotsEl.appendChild(row);
+      attachRowOpen(row, "slot", s.id);
+      el.appendChild(row);
     });
-  }
 
-  const notesEl = document.getElementById("today-notes");
-  const recentNotes = [...data.notes].sort((a,b)=>b.ts-a.ts).slice(0,4);
-  notesEl.innerHTML = recentNotes.length===0 ? `<div class="empty">No notes yet.</div>` :
-    recentNotes.map(n=>`
-      <div class="entry"><div class="entry-click" data-id="${n.id}">
+  }else if(todayCategory==="notes"){
+    const items = [...data.notes].sort((a,b)=>b.ts-a.ts);
+    el.innerHTML = items.length===0 ? `<div class="empty">No notes yet.</div>` : "";
+    items.forEach(n=>{
+      const row = document.createElement("div");
+      row.className = "entry";
+      row.innerHTML = `
         <div class="entry-head"><span class="entry-tag">${escapeHtml(n.subject||"general")}</span><span class="entry-date">${new Date(n.ts).toLocaleDateString()}</span></div>
         <div class="entry-title">${escapeHtml(n.title||"Untitled")}</div>
-      </div></div>`).join("");
-  notesEl.querySelectorAll("[data-id]").forEach(el=>el.addEventListener("click",()=>openModal("note", el.dataset.id)));
-
-  const logEl = document.getElementById("today-log");
-  const recentLog = [...data.log].sort((a,b)=>(b.date||"").localeCompare(a.date||"")).slice(0,4);
-  logEl.innerHTML = recentLog.length===0 ? `<div class="empty">No entries yet.</div>` :
-    recentLog.map(n=>`
-      <div class="entry"><div class="entry-click" data-id="${n.id}">
-        <div class="entry-head"><span class="entry-tag">${escapeHtml(n.subject||"general")}</span><span class="entry-date">${n.date}</span></div>
-        <div class="entry-body">${escapeHtml(stripTags(n.body).slice(0,120))}</div>
-      </div></div>`).join("");
-  logEl.querySelectorAll("[data-id]").forEach(el=>el.addEventListener("click",()=>openModal("log", el.dataset.id)));
-
-  const tablesEl = document.getElementById("today-tables");
-  tablesEl.innerHTML = data.tables.length===0 ? `<div class="empty">No tables yet.</div>` :
-    data.tables.map(t=>`<div class="entry"><div class="entry-title">${escapeHtml(t.name)}</div><div style="font-size:12px;color:var(--ink-faint);">${t.rows.length} row${t.rows.length===1?"":"s"} · ${t.columns.length} column${t.columns.length===1?"":"s"}</div></div>`).join("");
-
-  const todosEl = document.getElementById("today-todos");
-  const activeTodos = data.todos.filter(t=>!t.done).slice(0,5);
-  const todayStr = new Date().toISOString().slice(0,10);
-  todosEl.innerHTML = activeTodos.length===0 ? `<div class="empty">Nothing pending.</div>` :
-    activeTodos.map(t=>`<div class="todo-item" data-id="${t.id}">${todoRowHtml(t, todayStr)}</div>`).join("");
-  todosEl.querySelectorAll(".todo-item").forEach(row=>{
-    row.querySelector(".del").style.display = "none";
-    const id = row.dataset.id;
-    row.querySelector('input[type="checkbox"]').addEventListener("change",(e)=>{
-      const t = data.todos.find(x=>x.id===id);
-      t.done = e.target.checked; t.doneAt = t.done ? Date.now() : null;
-      saveData(); renderTodo(); renderToday();
+        <div class="entry-body rich-display">${renderRichOrPlain(n.body)}</div>`;
+      attachRowOpen(row, "note", n.id);
+      el.appendChild(row);
     });
-    row.querySelector(".todo-text").addEventListener("click", ()=>openModal("todo", id));
-  });
 
-  const workEl = document.getElementById("today-work");
-  const activeWork = data.work.filter(w=>w.status!=="done").slice(0,4);
-  workEl.innerHTML = activeWork.length===0 ? `<div class="empty">No active work items.</div>` :
-    activeWork.map(w=>`<div class="entry" data-id="${w.id}"><div class="entry-title" style="cursor:pointer;">${escapeHtml(w.title)}</div><div style="font-size:11.5px;color:var(--ink-faint);text-transform:capitalize;">${w.status}</div></div>`).join("");
-  workEl.querySelectorAll("[data-id]").forEach(el=>el.addEventListener("click",()=>openModal("work", el.dataset.id)));
+  }else if(todayCategory==="log"){
+    const items = [...data.log].sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+    el.innerHTML = items.length===0 ? `<div class="empty">No entries yet.</div>` : "";
+    items.forEach(n=>{
+      const row = document.createElement("div");
+      row.className = "entry";
+      row.innerHTML = `
+        <div class="entry-head"><span class="entry-tag">${escapeHtml(n.subject||"general")}</span><span class="entry-date">${n.date}</span></div>
+        <div class="entry-body rich-display">${renderRichOrPlain(n.body)}</div>`;
+      attachRowOpen(row, "log", n.id);
+      el.appendChild(row);
+    });
+
+  }else if(todayCategory==="tables"){
+    el.innerHTML = data.tables.length===0 ? `<div class="empty">No tables yet.</div>` : "";
+    data.tables.forEach(t=>{
+      const row = document.createElement("div");
+      row.className = "entry";
+      row.style.cursor = "pointer";
+      row.innerHTML = `<div class="entry-title">${escapeHtml(t.name)}</div><div style="font-size:12px;color:var(--ink-faint);">${t.rows.length} row${t.rows.length===1?"":"s"} · ${t.columns.length} column${t.columns.length===1?"":"s"}</div>`;
+      row.addEventListener("click", ()=>{ document.querySelector('nav button[data-view="tables"]').click(); });
+      el.appendChild(row);
+    });
+
+  }else if(todayCategory==="todo"){
+    const items = [...data.todos].sort((a,b)=> (a.due||"9999").localeCompare(b.due||"9999") || b.createdAt-a.createdAt);
+    el.innerHTML = items.length===0 ? `<div class="empty">No tasks yet.</div>` : "";
+    const todayStr = new Date().toISOString().slice(0,10);
+    items.forEach(t=>{
+      const row = document.createElement("div");
+      row.className = "todo-item" + (t.status==="done" ? " done" : "");
+      row.style.flexDirection = "column";
+      row.style.alignItems = "stretch";
+      row.innerHTML = todoRowHtml(t, todayStr);
+      attachRowOpen(row, "todo", t.id);
+      row.querySelectorAll(".status-btns button").forEach(b=>{
+        b.addEventListener("click", (e)=>{ e.stopPropagation(); setTodoStatus(t.id, b.dataset.s); });
+      });
+      row.querySelector(".del").addEventListener("click", (e)=>{
+        e.stopPropagation();
+        if(!confirm("Delete this task?")) return;
+        data.todos = data.todos.filter(x=>x.id!==t.id);
+        saveData(); renderTodo(); renderToday();
+      });
+      const remarkEl = row.querySelector(".rt-editable");
+      if(remarkEl){
+        document.getElementById(remarkEl.id + "-toolbar").innerHTML = buildRichToolbar(remarkEl.id);
+        remarkEl.addEventListener("input", ()=>{ t.remark = remarkEl.innerHTML; saveData(); });
+      }
+      el.appendChild(row);
+    });
+
+  }else if(todayCategory==="work"){
+    const items = [...data.work].sort((a,b)=>b.createdAt-a.createdAt);
+    el.innerHTML = items.length===0 ? `<div class="empty">No work items yet.</div>` : "";
+    items.forEach(w=>{
+      const row = document.createElement("div");
+      row.className = "work-item" + (w.status==="done" ? " done-list" : "");
+      row.innerHTML = `
+        <div class="work-title">${escapeHtml(w.title)}</div>
+        <div class="work-body-preview">${escapeHtml(stripTags(w.body).slice(0,140))}</div>
+        <div class="status-btns">
+          <button class="pending ${w.status==='pending'?'active':''}" data-s="pending">Pending</button>
+          <button class="semi ${w.status==='semi'?'active':''}" data-s="semi">Semi-done</button>
+          <button class="done ${w.status==='done'?'active':''}" data-s="done">Done</button>
+        </div>
+        ${w.status==='semi' ? `<div class="remark-box"><label>What's left?</label><div id="wtoday-remark-${w.id}-toolbar"></div><div class="rt-editable" id="wtoday-remark-${w.id}" contenteditable="true">${w.remark||""}</div></div>` : ""}`;
+      attachRowOpen(row, "work", w.id);
+      row.querySelectorAll(".status-btns button").forEach(b=>{
+        b.addEventListener("click", (e)=>{ e.stopPropagation(); setWorkStatus(w.id, b.dataset.s); });
+      });
+      const remarkEl = row.querySelector(".rt-editable");
+      if(remarkEl){
+        document.getElementById(remarkEl.id + "-toolbar").innerHTML = buildRichToolbar(remarkEl.id);
+        remarkEl.addEventListener("input", ()=>{ w.remark = remarkEl.innerHTML; saveData(); });
+      }
+      el.appendChild(row);
+    });
+  }
 }
 
 /* ---------------- detail / edit modal ---------------- */
@@ -1407,7 +1514,8 @@ function renderModal(){
         <div class="rich-display">${renderRichOrPlain(item.body)}</div>`;
     }else if(type==="todo"){
       html = `<h3 style="font-family:var(--serif);font-style:italic;font-weight:400;font-size:19px;margin:0 0 8px;">${escapeHtml(item.text)}</h3>
-        ${item.due ? `<div style="font-size:12.5px;color:var(--ink-faint);">Due ${item.due}</div>` : ""}`;
+        ${item.due ? `<div style="font-size:12.5px;color:var(--ink-faint);margin-bottom:10px;">Due ${item.due}</div>` : ""}
+        ${item.remark ? `<div class="remark-box"><label>What's left</label><div class="rich-display" style="font-size:13.5px;color:var(--ink-dim);">${renderRichOrPlain(item.remark)}</div></div>` : ""}`;
     }else if(type==="slot"){
       html = `<h3 style="font-family:var(--serif);font-style:italic;font-weight:400;font-size:19px;margin:0 0 8px;">${escapeHtml(item.subject)}</h3>
         <div style="font-size:12.5px;color:var(--ink-faint);margin-bottom:6px;">${item._day} · ${item.start}–${item.end}</div>
@@ -1415,7 +1523,7 @@ function renderModal(){
     }else if(type==="work"){
       html = `<h3 style="font-family:var(--serif);font-style:italic;font-weight:400;font-size:19px;margin:0 0 8px;">${escapeHtml(item.title)}</h3>
         <div class="rich-display">${renderRichOrPlain(item.body)}</div>
-        ${item.remark ? `<div class="remark-box"><label>What's left</label><div style="font-size:13.5px;color:var(--ink-dim);">${escapeHtml(item.remark)}</div></div>` : ""}`;
+        ${item.remark ? `<div class="remark-box"><label>What's left</label><div class="rich-display" style="font-size:13.5px;color:var(--ink-dim);">${renderRichOrPlain(item.remark)}</div></div>` : ""}`;
     }
     bodyEl.innerHTML = html;
 
@@ -1423,23 +1531,15 @@ function renderModal(){
     if(type==="todo" || type==="work"){
       const statusWrap = document.createElement("div");
       statusWrap.className = "status-btns";
-      if(type==="todo"){
-        statusWrap.innerHTML = `
-          <button class="pending ${!item.done?'active':''}" data-status="pending">Pending</button>
-          <button class="done ${item.done?'active':''}" data-status="done">Done</button>`;
-      }else{
-        statusWrap.innerHTML = `
-          <button class="pending ${item.status==='pending'?'active':''}" data-status="pending">Pending</button>
-          <button class="semi ${item.status==='semi'?'active':''}" data-status="semi">Semi-done</button>
-          <button class="done ${item.status==='done'?'active':''}" data-status="done">Done</button>`;
-      }
+      statusWrap.innerHTML = `
+        <button class="pending ${item.status==='pending'?'active':''}" data-status="pending">Pending</button>
+        <button class="semi ${item.status==='semi'?'active':''}" data-status="semi">Semi-done</button>
+        <button class="done ${item.status==='done'?'active':''}" data-status="done">Done</button>`;
       footEl.appendChild(statusWrap);
       statusWrap.querySelectorAll("button").forEach(b=>{
         b.addEventListener("click", ()=>{
           if(type==="todo"){
-            const t = data.todos.find(x=>x.id===id);
-            t.done = b.dataset.status==="done"; t.doneAt = t.done ? Date.now() : null;
-            saveData(); renderTodo(); renderToday();
+            setTodoStatus(id, b.dataset.status);
           }else{
             setWorkStatus(id, b.dataset.status);
           }
@@ -1469,7 +1569,10 @@ function renderModal(){
         <div class="rt-editable" id="modal-f-body" contenteditable="true">${item.body||""}</div>`;
     }else if(type==="todo"){
       html = `<label>Task</label><input type="text" id="modal-f-text" value="${escapeHtml(item.text)}">
-        <label>Due</label><input type="date" id="modal-f-due" value="${item.due||""}">`;
+        <label>Due</label><input type="date" id="modal-f-due" value="${item.due||""}">
+        <label style="margin-top:10px;">What's left (if not fully done)</label>
+        <div id="modal-remark-toolbar-slot"></div>
+        <div class="rt-editable" id="modal-f-remark" contenteditable="true">${item.remark||""}</div>`;
     }else if(type==="slot"){
       html = `<label>Day</label><select id="modal-f-day">${DAYS.map(d=>`<option value="${d}" ${d===item._day?"selected":""}>${d}</option>`).join("")}</select>
         <div class="row"><div><label>Start</label><input type="time" id="modal-f-start" value="${item.start}"></div><div><label>End</label><input type="time" id="modal-f-end" value="${item.end}"></div></div>
@@ -1481,11 +1584,14 @@ function renderModal(){
         <div id="modal-toolbar-slot"></div>
         <div class="rt-editable" id="modal-f-body" contenteditable="true">${item.body||""}</div>
         <label style="margin-top:10px;">What's left (if not fully done)</label>
-        <textarea id="modal-f-remark">${escapeHtml(item.remark||"")}</textarea>`;
+        <div id="modal-remark-toolbar-slot"></div>
+        <div class="rt-editable" id="modal-f-remark" contenteditable="true">${item.remark||""}</div>`;
     }
     bodyEl.innerHTML = html;
     const toolbarSlot = document.getElementById("modal-toolbar-slot");
     if(toolbarSlot) toolbarSlot.innerHTML = buildRichToolbar("modal-f-body");
+    const remarkToolbarSlot = document.getElementById("modal-remark-toolbar-slot");
+    if(remarkToolbarSlot) remarkToolbarSlot.innerHTML = buildRichToolbar("modal-f-remark");
     footEl.innerHTML = `<button class="btn" id="modal-save-btn">Save</button><button class="btn ghost" id="modal-cancel-btn">Cancel</button>`;
     document.getElementById("modal-save-btn").addEventListener("click", saveModalEdit);
     document.getElementById("modal-cancel-btn").addEventListener("click", ()=>{ modalState.editing=false; renderModal(); });
@@ -1519,10 +1625,11 @@ function saveModalEdit(){
     }else if(type==="todo"){
       item.text = document.getElementById("modal-f-text").value.trim();
       item.due = document.getElementById("modal-f-due").value || null;
+      item.remark = document.getElementById("modal-f-remark").innerHTML;
     }else if(type==="work"){
       item.title = document.getElementById("modal-f-title").value.trim();
       item.body = document.getElementById("modal-f-body").innerHTML;
-      item.remark = document.getElementById("modal-f-remark").value.trim();
+      item.remark = document.getElementById("modal-f-remark").innerHTML;
     }
   }
   saveData();
