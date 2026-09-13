@@ -25,7 +25,6 @@
   *{box-sizing:border-box;}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);}
   ::selection{background:var(--amber-dim);color:#12141d;}
-
   a{color:var(--amber);}
 
   .shell{display:flex;min-height:100vh;}
@@ -43,7 +42,7 @@
     border-bottom:1px solid var(--line-soft);margin-bottom:8px;
   }
   .brand span{color:var(--amber);font-style:normal;}
-  nav{display:flex;flex-direction:column;margin-top:8px;}
+  nav{display:flex;flex-direction:column;margin-top:8px;overflow-y:auto;}
   nav button{
     all:unset;cursor:pointer;padding:11px 24px;color:var(--ink-dim);
     font-size:14px;border-left:2px solid transparent;
@@ -64,6 +63,7 @@
   .card{
     background:var(--bg-raised);border:1px solid var(--line);
     border-radius:6px;padding:18px 20px;margin-bottom:14px;
+    overflow-wrap:break-word;word-break:break-word;
   }
   label{display:block;font-size:12.5px;color:var(--ink-dim);margin-bottom:5px;}
   input, select, textarea{
@@ -85,7 +85,26 @@
   button.btn.ghost:hover{color:var(--ink);border-color:var(--ink-faint);}
   button.btn.danger{background:transparent;color:var(--danger);border:1px solid #4a2b2b;}
   button.btn.danger:hover{background:#2a1717;}
-  .form-actions{display:flex;gap:10px;margin-top:12px;}
+  .form-actions{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;}
+
+  /* ---------- rich text editor ---------- */
+  .rt-toolbar{display:flex;gap:3px;flex-wrap:wrap;align-items:center;padding:6px;background:var(--bg-inset);border:1px solid var(--line);border-bottom:none;border-radius:4px 4px 0 0;}
+  .rt-toolbar button{all:unset;cursor:pointer;padding:5px 9px;font-size:12.5px;color:var(--ink-dim);border-radius:3px;}
+  .rt-toolbar button:hover{background:var(--line-soft);color:var(--ink);}
+  .rt-toolbar .rt-sep{width:1px;align-self:stretch;background:var(--line);margin:2px 3px;}
+  .rt-toolbar .swatch{width:16px;height:16px;border-radius:50%;padding:0;border:1px solid var(--line);}
+  .rt-editable{
+    min-height:90px;background:var(--bg-inset);border:1px solid var(--line);border-top:none;
+    border-radius:0 0 4px 4px;padding:10px 12px;font-size:14px;line-height:1.6;color:var(--ink);
+    overflow-wrap:break-word;word-break:break-word;
+  }
+  .rt-editable:focus{outline:1px solid var(--amber-dim);}
+  .rt-editable:empty:before{content:attr(data-placeholder);color:var(--ink-faint);}
+  .rt-editable h2{font-size:17px;margin:8px 0 4px;font-family:var(--serif);font-style:italic;}
+  .rt-editable h3{font-size:15px;margin:8px 0 4px;}
+  .rich-display{overflow-wrap:break-word;word-break:break-word;line-height:1.65;}
+  .rich-display h2{font-size:16px;font-family:var(--serif);font-style:italic;margin:6px 0;}
+  .rich-display h3{font-size:14px;margin:6px 0;}
 
   /* ---------- timetable ---------- */
   .day-tabs{display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap;}
@@ -96,14 +115,14 @@
   .day-tabs button.active{color:#1a1108;background:var(--teal);border-color:var(--teal);}
   .slot{
     display:flex;gap:14px;align-items:flex-start;padding:12px 0;
-    border-bottom:1px solid var(--line-soft);
+    border-bottom:1px solid var(--line-soft);cursor:pointer;
   }
   .slot:last-child{border-bottom:none;}
   .slot .time{
     font-family:var(--mono);font-size:12.5px;color:var(--amber);
     width:98px;flex-shrink:0;padding-top:2px;
   }
-  .slot .body{flex:1;}
+  .slot .body{flex:1;overflow-wrap:break-word;word-break:break-word;}
   .slot .subj{font-size:14.5px;color:var(--ink);}
   .slot .topic{font-size:12.5px;color:var(--ink-faint);margin-top:2px;}
   .slot .del{all:unset;cursor:pointer;color:var(--ink-faint);font-size:16px;line-height:1;padding:2px 4px;}
@@ -121,19 +140,11 @@
   .table-head-row h3{font-family:var(--serif);font-style:italic;font-weight:400;font-size:19px;margin:0;color:var(--ink);}
   .grid-wrap{overflow-x:auto;}
   table.datagrid{border-collapse:collapse;width:100%;font-size:13.5px;}
-  table.datagrid th, table.datagrid td{
-    border:1px solid var(--line);padding:0;min-width:120px;
-  }
-  table.datagrid th{
-    background:var(--bg-inset);color:var(--ink-dim);font-weight:500;
-    text-align:left;padding:8px 10px;font-size:12.5px;white-space:nowrap;
-  }
+  table.datagrid th, table.datagrid td{border:1px solid var(--line);padding:0;min-width:120px;}
+  table.datagrid th{background:var(--bg-inset);color:var(--ink-dim);font-weight:500;text-align:left;padding:8px 10px;font-size:12.5px;white-space:nowrap;}
   table.datagrid th .col-del{all:unset;cursor:pointer;color:var(--ink-faint);float:right;padding:0 2px;}
   table.datagrid th .col-del:hover{color:var(--danger);}
-  table.datagrid td input{
-    border:none;background:transparent;border-radius:0;padding:8px 10px;
-    width:100%;font-size:13.5px;
-  }
+  table.datagrid td input{border:none;background:transparent;border-radius:0;padding:8px 10px;width:100%;font-size:13.5px;}
   table.datagrid td input:focus{outline:none;background:var(--line-soft);}
   table.datagrid td.row-del-cell{min-width:32px;width:32px;text-align:center;}
   table.datagrid .row-del{all:unset;cursor:pointer;color:var(--ink-faint);padding:6px;}
@@ -144,34 +155,26 @@
 
   /* ---------- todo ---------- */
   .stat-row{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;}
-  .stat-box{
-    flex:1;min-width:120px;background:var(--bg-raised);border:1px solid var(--line);
-    border-radius:6px;padding:14px 16px;
-  }
+  .stat-box{flex:1;min-width:120px;background:var(--bg-raised);border:1px solid var(--line);border-radius:6px;padding:14px 16px;}
   .stat-box .stat-label{font-size:12px;color:var(--ink-faint);}
   .stat-box .stat-value{font-family:var(--mono);font-size:24px;color:var(--amber);margin-top:4px;}
   .stat-box .stat-value.teal{color:var(--teal);}
 
-  .filter-tabs{display:flex;gap:4px;margin-bottom:14px;}
-  .filter-tabs button{
-    all:unset;cursor:pointer;padding:6px 13px;font-size:12.5px;
-    border:1px solid var(--line);border-radius:20px;color:var(--ink-faint);
-  }
+  .filter-tabs{display:flex;gap:4px;margin-bottom:14px;flex-wrap:wrap;}
+  .filter-tabs button{all:unset;cursor:pointer;padding:6px 13px;font-size:12.5px;border:1px solid var(--line);border-radius:20px;color:var(--ink-faint);}
   .filter-tabs button.active{color:#1a1108;background:var(--amber);border-color:var(--amber);}
 
   .todo-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line-soft);}
   .todo-item:last-child{border-bottom:none;}
-  .todo-item input[type="checkbox"]{
-    width:17px;height:17px;flex-shrink:0;accent-color:var(--amber);cursor:pointer;
-  }
-  .todo-item .todo-text{flex:1;font-size:14px;color:var(--ink);}
+  .todo-item input[type="checkbox"]{width:17px;height:17px;flex-shrink:0;accent-color:var(--amber);cursor:pointer;}
+  .todo-item .todo-text{flex:1;font-size:14px;color:var(--ink);cursor:pointer;overflow-wrap:break-word;word-break:break-word;}
   .todo-item.done .todo-text{color:var(--ink-faint);text-decoration:line-through;}
   .todo-item .todo-due{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);white-space:nowrap;}
   .todo-item .todo-due.overdue{color:var(--danger);}
   .todo-item .del{all:unset;cursor:pointer;color:var(--ink-faint);font-size:16px;line-height:1;padding:2px 4px;}
   .todo-item .del:hover{color:var(--danger);}
 
-  .analytics-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;}
+  .analytics-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;gap:10px;}
   .analytics-head h3{font-family:var(--serif);font-style:italic;font-weight:400;font-size:17px;margin:0;color:var(--ink);}
   .analytics-head .rate{font-family:var(--mono);font-size:13px;color:var(--teal);}
   .bar-chart{display:flex;gap:8px;align-items:flex-end;height:110px;padding-top:14px;margin-top:10px;}
@@ -182,33 +185,73 @@
   .bar-col .bar-label{font-size:11px;color:var(--ink-faint);font-family:var(--mono);}
 
   /* ---------- notes / log ---------- */
-  .entry{
-    border-bottom:1px solid var(--line-soft);padding:16px 0;
-  }
+  .entry{padding:16px 0;border-bottom:1px solid var(--line-soft);}
   .entry:last-child{border-bottom:none;}
+  .entry-click{cursor:pointer;}
   .entry-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:6px;}
-  .entry-tag{
-    font-family:var(--mono);font-size:11px;color:var(--teal);
-    border:1px solid #2b3f3c;padding:2px 8px;border-radius:20px;
-  }
+  .entry-tag{font-family:var(--mono);font-size:11px;color:var(--teal);border:1px solid #2b3f3c;padding:2px 8px;border-radius:20px;}
   .entry-date{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);}
   .entry-title{font-size:15px;color:var(--ink);margin:2px 0 4px;}
-  .entry-body{font-size:13.5px;color:var(--ink-dim);line-height:1.6;white-space:pre-wrap;}
+  .entry-body{font-size:13.5px;color:var(--ink-dim);line-height:1.6;overflow-wrap:break-word;word-break:break-word;}
   .entry-actions{margin-top:8px;display:flex;gap:14px;}
   .entry-actions button{all:unset;cursor:pointer;font-size:11.5px;color:var(--ink-faint);}
   .entry-actions button:hover{color:var(--ink);}
 
-  /* ---------- sync ---------- */
+  /* ---------- work / progress ---------- */
+  .work-item{padding:14px 0;border-bottom:1px solid var(--line-soft);}
+  .work-item:last-child{border-bottom:none;}
+  .work-title{font-size:14.5px;color:var(--ink);cursor:pointer;margin-bottom:6px;overflow-wrap:break-word;word-break:break-word;}
+  .work-title:hover{color:var(--amber);}
+  .work-body-preview{font-size:12.5px;color:var(--ink-faint);margin-bottom:8px;overflow-wrap:break-word;word-break:break-word;}
+  .status-btns{display:flex;gap:8px;flex-wrap:wrap;}
+  .status-btns button{all:unset;cursor:pointer;padding:7px 13px;font-size:12.5px;border:1px solid var(--line);border-radius:20px;color:var(--ink-faint);}
+  .status-btns button.pending.active{background:var(--danger);border-color:var(--danger);color:#2a1010;}
+  .status-btns button.semi.active{background:var(--amber);border-color:var(--amber);color:#1a1108;}
+  .status-btns button.done.active{background:var(--teal);border-color:var(--teal);color:#0d1f1c;}
+  .remark-box{margin-top:10px;background:var(--bg-inset);border:1px solid var(--line);border-radius:8px;padding:10px 12px;}
+  .remark-box label{color:var(--amber);}
+  .remark-box textarea{min-height:50px;font-size:13px;}
+  .done-list{cursor:pointer;}
+  .done-list .work-title{text-decoration:line-through;color:var(--ink-faint);}
+
+  /* ---------- modal ---------- */
+  .modal-overlay{position:fixed;inset:0;background:rgba(10,11,16,.72);display:none;align-items:center;justify-content:center;z-index:500;padding:24px;}
+  .modal-overlay.show{display:flex;}
+  .modal-box{background:var(--bg-raised);border:1px solid var(--line);border-radius:10px;width:100%;max-width:640px;max-height:88vh;overflow-y:auto;padding:26px 28px 22px;transform:scale(.94);opacity:0;transition:transform .18s ease,opacity .18s ease;}
+  .modal-overlay.show .modal-box{transform:scale(1);opacity:1;}
+  .modal-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+  .modal-tag{font-family:var(--mono);font-size:11px;color:var(--teal);border:1px solid #2b3f3c;padding:2px 8px;border-radius:20px;}
+  .modal-close{all:unset;cursor:pointer;color:var(--ink-faint);font-size:22px;line-height:1;}
+  .modal-close:hover{color:var(--ink);}
+  .modal-body{font-size:14.5px;color:var(--ink);overflow-wrap:break-word;word-break:break-word;}
+  .modal-body input, .modal-body textarea{margin-bottom:10px;}
+  .modal-footer{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;align-items:center;border-top:1px solid var(--line-soft);padding-top:16px;}
+
+  /* ---------- login ---------- */
+  .login-overlay{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;align-items:center;justify-content:center;}
+  .login-box{width:100%;max-width:340px;padding:0 20px;text-align:center;}
+  .login-box .brand{border:none;padding:0;margin-bottom:22px;font-size:28px;}
+  .login-box label{text-align:left;}
+  .login-box input{margin-bottom:12px;}
+  .login-err{color:var(--danger);font-size:12.5px;margin-bottom:10px;min-height:16px;}
+  .login-note{color:var(--ink-faint);font-size:11px;margin-top:18px;line-height:1.6;text-align:left;}
+
+  /* ---------- guide ---------- */
+  .lang-toggle{display:flex;gap:6px;margin-bottom:18px;}
+  .lang-toggle button{all:unset;cursor:pointer;padding:6px 14px;font-size:12.5px;border:1px solid var(--line);border-radius:20px;color:var(--ink-faint);}
+  .lang-toggle button.active{background:var(--amber);color:#1a1108;border-color:var(--amber);}
+  .guide-content{display:none;}
+  .guide-content.active{display:block;}
+  .guide-content h3{font-family:var(--serif);font-style:italic;font-weight:400;font-size:17px;color:var(--ink);margin:22px 0 8px;}
+  .guide-content h3:first-child{margin-top:0;}
+  .guide-content p, .guide-content li{color:var(--ink-dim);font-size:13.5px;line-height:1.75;}
+  .guide-content ul{padding-left:20px;margin:6px 0;}
+
+  .toast{position:fixed;bottom:24px;right:24px;background:var(--bg-raised);border:1px solid var(--line);color:var(--ink);padding:11px 18px;border-radius:6px;font-size:13.5px;opacity:0;transform:translateY(8px);transition:.25s;pointer-events:none;z-index:600;}
+  .toast.show{opacity:1;transform:translateY(0);}
   .status-line{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-dim);margin-bottom:16px;}
   .dot{width:7px;height:7px;border-radius:50%;background:var(--ink-faint);}
   .dot.on{background:var(--teal);}
-  .toast{
-    position:fixed;bottom:24px;right:24px;background:var(--bg-raised);
-    border:1px solid var(--line);color:var(--ink);padding:11px 18px;
-    border-radius:6px;font-size:13.5px;opacity:0;transform:translateY(8px);
-    transition:.25s;pointer-events:none;
-  }
-  .toast.show{opacity:1;transform:translateY(0);}
 
   @media (max-width: 720px){
     .shell{flex-direction:column;}
@@ -217,10 +260,25 @@
     nav{flex-direction:row;}
     .side-foot,.clock{display:none;}
     main{padding:24px 18px 50px;}
+    .modal-box{max-height:92vh;padding:20px 18px 18px;}
   }
 </style>
 </head>
 <body>
+
+<!-- LOGIN LOCK -->
+<div class="login-overlay" id="login-overlay">
+  <div class="login-box">
+    <div class="brand">desk<span>.</span></div>
+    <label>Username</label>
+    <input type="text" id="login-user" autocomplete="username">
+    <label>Password</label>
+    <input type="password" id="login-pass" autocomplete="current-password">
+    <div class="login-err" id="login-err"></div>
+    <button class="btn" id="login-btn" style="width:100%;">Unlock</button>
+    <div class="login-note">This is a light screen-lock for a personal device, not real security. The password lives in this page's own code, so anyone who views the page source can read it — don't rely on it to protect sensitive information.</div>
+  </div>
+</div>
 
 <div class="shell">
   <aside class="side">
@@ -233,6 +291,8 @@
       <button data-view="log">Learning log</button>
       <button data-view="tables">Tables</button>
       <button data-view="todo">To-do</button>
+      <button data-view="work">Progress</button>
+      <button data-view="guide">Guide</button>
       <button data-view="sync">Backup & sync</button>
     </nav>
     <div class="side-foot">Everything here stays on this device unless you connect Google Drive in Backup &amp; sync.</div>
@@ -244,55 +304,64 @@
     <section class="view active" id="view-today">
       <h1>Today</h1>
       <p class="sub" id="today-date"></p>
+
       <div class="card">
+        <div class="analytics-head"><h3>Timetable</h3></div>
         <div id="today-slots"></div>
       </div>
-      <h1 style="font-size:20px;margin-top:34px;">Recent notes</h1>
-      <div class="card" id="today-notes"></div>
+
+      <div class="card">
+        <div class="analytics-head"><h3>Notes</h3><button class="btn ghost" data-jump="notes">Open notes</button></div>
+        <div id="today-notes"></div>
+      </div>
+
+      <div class="card">
+        <div class="analytics-head"><h3>Learning log</h3><button class="btn ghost" data-jump="log">Open log</button></div>
+        <div id="today-log"></div>
+      </div>
+
+      <div class="card">
+        <div class="analytics-head"><h3>Tables</h3><button class="btn ghost" data-jump="tables">Open tables</button></div>
+        <div id="today-tables"></div>
+      </div>
+
+      <div class="card">
+        <div class="analytics-head"><h3>To-do</h3><button class="btn ghost" data-jump="todo">Open to-do</button></div>
+        <div id="today-todos"></div>
+      </div>
+
+      <div class="card">
+        <div class="analytics-head"><h3>Progress</h3><button class="btn ghost" data-jump="work">Open progress</button></div>
+        <div id="today-work"></div>
+      </div>
     </section>
 
     <!-- TIMETABLE -->
     <section class="view" id="view-timetable">
       <h1>Timetable</h1>
-      <p class="sub">Block out what you study, and when.</p>
+      <p class="sub">Block out what you study, and when. Click a slot to edit it.</p>
 
       <div class="day-tabs" id="day-tabs"></div>
 
       <div class="card">
         <div class="row">
-          <div>
-            <label>Start time</label>
-            <input type="time" id="tt-start" value="18:00">
-          </div>
-          <div>
-            <label>End time</label>
-            <input type="time" id="tt-end" value="19:00">
-          </div>
+          <div><label>Start time</label><input type="time" id="tt-start" value="18:00"></div>
+          <div><label>End time</label><input type="time" id="tt-end" value="19:00"></div>
         </div>
         <div class="row" style="margin-top:12px;">
-          <div>
-            <label>Subject / skill</label>
-            <input type="text" id="tt-subject" placeholder="e.g. React, DSA, IELTS">
-          </div>
-          <div>
-            <label>Topic (optional)</label>
-            <input type="text" id="tt-topic" placeholder="e.g. useEffect + cleanup">
-          </div>
+          <div><label>Subject / skill</label><input type="text" id="tt-subject" placeholder="e.g. React, DSA, IELTS"></div>
+          <div><label>Topic (optional)</label><input type="text" id="tt-topic" placeholder="e.g. useEffect + cleanup"></div>
         </div>
-        <div class="form-actions">
-          <button class="btn" id="tt-add">Add slot</button>
-        </div>
+        <div class="form-actions"><button class="btn" id="tt-add">Add slot</button></div>
       </div>
 
-      <div class="card">
-        <div id="tt-slots"></div>
-      </div>
+      <div class="card"><div id="tt-slots"></div></div>
     </section>
 
     <!-- NOTES -->
     <section class="view" id="view-notes">
       <h1>Notes</h1>
-      <p class="sub">Quick things worth remembering — a snippet, a gotcha, a link.</p>
+      <p class="sub">Quick things worth remembering — a snippet, a gotcha, a link. Click a note to expand or edit it.</p>
 
       <div class="card">
         <label>Subject</label>
@@ -302,10 +371,9 @@
         <input type="text" id="note-title" placeholder="e.g. useEffect cleanup order">
         <div style="height:10px;"></div>
         <label>Note</label>
-        <textarea id="note-body" placeholder="Write it the way you'd explain it to yourself in 3 months."></textarea>
-        <div class="form-actions">
-          <button class="btn" id="note-add">Save note</button>
-        </div>
+        <div id="note-toolbar-slot"></div>
+        <div class="rt-editable" id="note-body" contenteditable="true" data-placeholder="Write it the way you'd explain it to yourself in 3 months."></div>
+        <div class="form-actions"><button class="btn" id="note-add">Save note</button></div>
       </div>
 
       <div class="card" id="notes-list"></div>
@@ -314,25 +382,18 @@
     <!-- LEARNING LOG -->
     <section class="view" id="view-log">
       <h1>Learning log</h1>
-      <p class="sub">One entry per session — what you actually learned, in your own words.</p>
+      <p class="sub">One entry per session — what you actually learned, in your own words. Click an entry to expand or edit it.</p>
 
       <div class="card">
         <div class="row">
-          <div>
-            <label>Date</label>
-            <input type="date" id="log-date">
-          </div>
-          <div>
-            <label>Subject</label>
-            <input type="text" id="log-subject" placeholder="e.g. DSA">
-          </div>
+          <div><label>Date</label><input type="date" id="log-date"></div>
+          <div><label>Subject</label><input type="text" id="log-subject" placeholder="e.g. DSA"></div>
         </div>
         <div style="height:10px;"></div>
         <label>What did you learn / do?</label>
-        <textarea id="log-body" placeholder="e.g. Solved 3 tree problems. Finally understood how recursion unwinds for post-order traversal."></textarea>
-        <div class="form-actions">
-          <button class="btn" id="log-add">Add entry</button>
-        </div>
+        <div id="log-toolbar-slot"></div>
+        <div class="rt-editable" id="log-body" contenteditable="true" data-placeholder="e.g. Solved 3 tree problems. Finally understood how recursion unwinds for post-order traversal."></div>
+        <div class="form-actions"><button class="btn" id="log-add">Add entry</button></div>
       </div>
 
       <div class="card" id="log-list"></div>
@@ -345,18 +406,10 @@
 
       <div class="card">
         <div class="row">
-          <div>
-            <label>New table name</label>
-            <input type="text" id="new-table-name" placeholder="e.g. Weekly progress">
-          </div>
-          <div>
-            <label>Columns (comma separated)</label>
-            <input type="text" id="new-table-cols" placeholder="e.g. Subject, Topic, Status">
-          </div>
+          <div><label>New table name</label><input type="text" id="new-table-name" placeholder="e.g. Weekly progress"></div>
+          <div><label>Columns (comma separated)</label><input type="text" id="new-table-cols" placeholder="e.g. Subject, Topic, Status"></div>
         </div>
-        <div class="form-actions">
-          <button class="btn" id="new-table-add">Create table</button>
-        </div>
+        <div class="form-actions"><button class="btn" id="new-table-add">Create table</button></div>
       </div>
 
       <div class="table-picker" id="table-picker"></div>
@@ -366,37 +419,20 @@
     <!-- TODO -->
     <section class="view" id="view-todo">
       <h1>To-do</h1>
-      <p class="sub">Small tasks, tracked — with a score so progress isn't just a feeling.</p>
+      <p class="sub">Small tasks, tracked — with a score so progress isn't just a feeling. Click a task to expand or edit it.</p>
 
       <div class="stat-row">
-        <div class="stat-box">
-          <div class="stat-label">Total score</div>
-          <div class="stat-value" id="stat-total">0</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">This week</div>
-          <div class="stat-value" id="stat-week">0</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">This month</div>
-          <div class="stat-value teal" id="stat-month">0</div>
-        </div>
+        <div class="stat-box"><div class="stat-label">Total score</div><div class="stat-value" id="stat-total">0</div></div>
+        <div class="stat-box"><div class="stat-label">This week</div><div class="stat-value" id="stat-week">0</div></div>
+        <div class="stat-box"><div class="stat-label">This month</div><div class="stat-value teal" id="stat-month">0</div></div>
       </div>
 
       <div class="card">
         <div class="row">
-          <div style="flex:2;">
-            <label>Task</label>
-            <input type="text" id="todo-text" placeholder="e.g. Finish 5 DSA problems">
-          </div>
-          <div>
-            <label>Due (optional)</label>
-            <input type="date" id="todo-due">
-          </div>
+          <div style="flex:2;"><label>Task</label><input type="text" id="todo-text" placeholder="e.g. Finish 5 DSA problems"></div>
+          <div><label>Due (optional)</label><input type="date" id="todo-due"></div>
         </div>
-        <div class="form-actions">
-          <button class="btn" id="todo-add">Add task</button>
-        </div>
+        <div class="form-actions"><button class="btn" id="todo-add">Add task</button></div>
       </div>
 
       <div class="card">
@@ -409,19 +445,102 @@
       </div>
 
       <div class="card">
-        <div class="analytics-head">
-          <h3>This week</h3>
-          <span class="rate" id="week-rate"></span>
-        </div>
+        <div class="analytics-head"><h3>This week</h3><span class="rate" id="week-rate"></span></div>
         <div class="bar-chart" id="week-chart"></div>
       </div>
 
       <div class="card">
-        <div class="analytics-head">
-          <h3>This month</h3>
-          <span class="rate" id="month-rate"></span>
-        </div>
+        <div class="analytics-head"><h3>This month</h3><span class="rate" id="month-rate"></span></div>
         <div class="bar-chart" id="month-chart"></div>
+      </div>
+    </section>
+
+    <!-- WORK / PROGRESS -->
+    <section class="view" id="view-work">
+      <h1>Progress</h1>
+      <p class="sub">Track work end to end — mark it pending, semi-done, or done, and see how you're pacing over time.</p>
+
+      <div class="card">
+        <label>Title</label>
+        <input type="text" id="work-title-input" placeholder="e.g. Finish portfolio project">
+        <div style="height:10px;"></div>
+        <label>Description</label>
+        <div id="work-toolbar-slot"></div>
+        <div class="rt-editable" id="work-body-input" contenteditable="true" data-placeholder="What does this work involve?"></div>
+        <div class="form-actions"><button class="btn" id="work-add">Add to tracker</button></div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-top:0;font-weight:600;font-size:14.5px;">Active</h3>
+        <div id="work-list"></div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-top:0;font-weight:600;font-size:14.5px;">Done</h3>
+        <div id="work-done-list"></div>
+      </div>
+
+      <div class="card">
+        <div class="filter-tabs" id="work-progress-tabs">
+          <button data-range="daily">Daily</button>
+          <button data-range="weekly" class="active">Weekly</button>
+          <button data-range="monthly">Monthly</button>
+          <button data-range="custom">Custom</button>
+        </div>
+        <div class="row" id="wp-custom-range" style="display:none;margin-bottom:14px;">
+          <div><label>From</label><input type="date" id="wp-from"></div>
+          <div><label>To</label><input type="date" id="wp-to"></div>
+          <div style="display:flex;align-items:flex-end;"><button class="btn ghost" id="wp-apply">Apply</button></div>
+        </div>
+        <div id="work-progress-body"></div>
+      </div>
+    </section>
+
+    <!-- GUIDE -->
+    <section class="view" id="view-guide">
+      <h1>Guide</h1>
+      <p class="sub">What's in this app, and how to use it.</p>
+      <div class="lang-toggle">
+        <button data-lang="en" class="active">English</button>
+        <button data-lang="ur">Roman Urdu</button>
+      </div>
+
+      <div class="guide-content active" id="guide-en">
+        <h3>Today</h3>
+        <p>A single overview pulling from every other tab — today's timetable, recent notes, recent log entries, your tables, active to-dos, and active work items. Click anything here to open it in full.</p>
+        <h3>Timetable</h3>
+        <p>Plan slots per day of the week. Click a slot to edit its time, subject, topic, or even move it to a different day.</p>
+        <h3>Notes &amp; Learning log</h3>
+        <p>Both have a small formatting toolbar: bold, headings, text alignment, and four highlight colors. Click any note or log entry to expand it and edit or delete it.</p>
+        <h3>Tables</h3>
+        <p>Build your own tracker with custom columns and rows — anything spreadsheet-like.</p>
+        <h3>To-do</h3>
+        <p>Simple tasks with a due date. Every completed task is worth 10 points, shown as total / weekly / monthly score, plus bar charts of completions.</p>
+        <h3>Progress</h3>
+        <p>For bigger pieces of work. Each item can be Pending, Semi-done, or Done. Marking something Semi-done opens a small note box to record what's left — edit it any time. Marking Done automatically moves it to the Done list. Daily / Weekly / Monthly / Custom views show how much you finished, with a bar chart.</p>
+        <h3>Backup &amp; sync</h3>
+        <p>Data saves to this browser automatically. You can also download a JSON backup, turn on Private mode for a shared computer (nothing gets saved to that device), or connect Google Drive for a private cloud copy.</p>
+        <h3>Login lock</h3>
+        <p>A simple username/password screen guards the app. It's a convenience lock for a personal device, not real security — the credentials are visible in the page's own source code.</p>
+      </div>
+
+      <div class="guide-content" id="guide-ur">
+        <h3>Today</h3>
+        <p>Ye ek jagah hai jahan baki sab tabs ka khulasa nazar aata hai — aaj ka timetable, recent notes, recent log entries, tumhari tables, active to-dos, aur active work items. Kisi bhi cheez pe click karke usay pura khol sakte ho.</p>
+        <h3>Timetable</h3>
+        <p>Har din ke liye time slots banao. Kisi slot pe click karke uska time, subject, topic badal sakte ho, ya usay kisi aur din pe move kar sakte ho.</p>
+        <h3>Notes aur Learning log</h3>
+        <p>Dono me ek chhota formatting toolbar hai: bold, headings, text alignment, aur 4 highlight colors. Kisi bhi note ya log entry pe click karke usay poora khol ke edit ya delete kar sakte ho.</p>
+        <h3>Tables</h3>
+        <p>Apni marzi ki table banao — jitne chaho columns aur rows, jaise koi bhi spreadsheet.</p>
+        <h3>To-do</h3>
+        <p>Chhote tasks, due date ke saath. Har complete task ke 10 points milte hain — total / weekly / monthly score dikhta hai, saath me bar charts bhi.</p>
+        <h3>Progress</h3>
+        <p>Bade kaam ke liye. Har item Pending, Semi-done, ya Done ho sakta hai. Semi-done select karte hi ek chhota note box khulta hai jahan likh sakte ho ke kya baaki hai — usay kabhi bhi edit kar sakte ho. Done karte hi wo apne aap Done list me chala jata hai. Daily / Weekly / Monthly / Custom views me dekh sakte ho kitna kaam hua, bar chart ke saath.</p>
+        <h3>Backup aur sync</h3>
+        <p>Data khud-ba-khud is browser me save hota hai. Chaho to JSON backup download kar sakte ho, kisi shared computer pe Private mode on kar sakte ho (us device pe kuch save nahi hoga), ya Google Drive connect karke ek private cloud copy rakh sakte ho.</p>
+        <h3>Login lock</h3>
+        <p>Ek simple username/password screen app ko guard karta hai. Ye sirf apne personal device ke liye ek halka lock hai, real security nahi — password page ke apne source code me nazar aata hai.</p>
       </div>
     </section>
 
@@ -442,12 +561,16 @@
         </div>
       </div>
 
+      <div class="card" id="private-mode-card">
+        <h3 style="margin-top:0;font-weight:600;font-size:14.5px;">Private mode — for shared or restricted PCs</h3>
+        <p class="sub" style="margin-bottom:14px;">When on, nothing is written to this browser. Everything lives only in this tab's memory and disappears the moment you close it — connect Drive (if login is allowed on this PC) to save your work there instead.</p>
+        <div class="status-line"><span class="dot" id="private-dot"></span><span id="private-status">Off — saving normally to this browser</span></div>
+        <div class="form-actions"><button class="btn ghost" id="private-toggle">Turn on private mode</button></div>
+      </div>
+
       <div class="card">
         <h3 style="margin-top:0;font-weight:600;font-size:14.5px;">Google Drive</h3>
-        <div class="status-line">
-          <span class="dot" id="drive-dot"></span>
-          <span id="drive-status">Not connected</span>
-        </div>
+        <div class="status-line"><span class="dot" id="drive-dot"></span><span id="drive-status">Not connected</span></div>
         <p class="sub" id="drive-hint" style="margin-bottom:14px;"></p>
         <div class="form-actions">
           <button class="btn ghost" id="drive-connect">Connect Google Drive</button>
@@ -466,36 +589,74 @@
   </main>
 </div>
 
+<!-- DETAIL / EDIT MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-box" id="modal-box">
+    <div class="modal-header">
+      <span class="modal-tag" id="modal-tag"></span>
+      <button class="modal-close" id="modal-close">×</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer" id="modal-footer"></div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
 /* ============================================================
    CONFIG — only needed if you want Google Drive sync.
-   Leave GOOGLE_CLIENT_ID empty to hide/disable Drive features.
-   See the setup guide for how to get this value.
    ============================================================ */
-const CONFIG = {
-  GOOGLE_CLIENT_ID: "" // e.g. "1234567890-abc123.apps.googleusercontent.com"
-};
+const CONFIG = { GOOGLE_CLIENT_ID: "" };
+const CREDENTIALS = { user: "wellzone", pass: "waterfire1800" };
+
+/* ---------------- login lock ---------------- */
+function checkLogin(){
+  if(sessionStorage.getItem("desk_unlocked")==="1"){
+    document.getElementById("login-overlay").style.display = "none";
+  }
+}
+function attemptLogin(){
+  const u = document.getElementById("login-user").value.trim();
+  const p = document.getElementById("login-pass").value;
+  if(u===CREDENTIALS.user && p===CREDENTIALS.pass){
+    sessionStorage.setItem("desk_unlocked","1");
+    document.getElementById("login-overlay").style.display = "none";
+    document.getElementById("login-err").textContent = "";
+  }else{
+    document.getElementById("login-err").textContent = "Wrong username or password.";
+  }
+}
+document.getElementById("login-btn").addEventListener("click", attemptLogin);
+document.getElementById("login-pass").addEventListener("keydown", (e)=>{ if(e.key==="Enter") attemptLogin(); });
+checkLogin();
 
 /* ---------------- storage ---------------- */
 const STORE_KEY = "desk_data_v1";
 const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
 
+function emptyData(){ return { timetable: {}, notes: [], log: [], tables: [], todos: [], work: [] }; }
+function normalizeData(d){
+  d = Object.assign(emptyData(), d);
+  DAYS.forEach(day => { if(!d.timetable[day]) d.timetable[day] = []; });
+  if(!d.tables) d.tables = [];
+  if(!d.todos) d.todos = [];
+  if(!d.work) d.work = [];
+  return d;
+}
 function loadData(){
   try{
     const raw = localStorage.getItem(STORE_KEY);
-    if(raw) return JSON.parse(raw);
+    if(raw) return normalizeData(JSON.parse(raw));
   }catch(e){}
-  return { timetable: {}, notes: [], log: [], tables: [], todos: [] };
+  return emptyData();
 }
+let privateMode = false;
 function saveData(){
+  if(privateMode) return;
   localStorage.setItem(STORE_KEY, JSON.stringify(data));
 }
-let data = loadData();
-DAYS.forEach(d => { if(!data.timetable[d]) data.timetable[d] = []; });
-if(!data.tables) data.tables = [];
-  if(!data.todos) data.todos = [];
+let data = normalizeData(loadData());
 
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 function toast(msg){
@@ -505,6 +666,57 @@ function toast(msg){
   clearTimeout(toast._t);
   toast._t = setTimeout(()=>t.classList.remove("show"), 2400);
 }
+function escapeHtml(s){
+  return (s||"").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function renderRichOrPlain(body){
+  if(!body) return "";
+  if(body.indexOf("<")!==-1) return body;
+  return escapeHtml(body).replace(/\n/g,"<br>");
+}
+function stripTags(html){
+  const d = document.createElement("div");
+  d.innerHTML = html || "";
+  return d.textContent || "";
+}
+function refreshEverything(){
+  renderDayTabs(); renderSlots(); renderNotes(); renderLog(); renderToday();
+  renderTablePicker(); renderTodo(); renderWork();
+}
+
+/* ---------------- rich text toolbar ---------------- */
+function buildRichToolbar(targetId){
+  return `<div class="rt-toolbar" data-target="${targetId}">
+    <button data-cmd="bold" title="Bold"><b>B</b></button>
+    <button data-cmd="formatBlock" data-val="H2" title="Heading">H2</button>
+    <button data-cmd="formatBlock" data-val="H3" title="Subheading">H3</button>
+    <button data-cmd="formatBlock" data-val="P" title="Paragraph">¶</button>
+    <span class="rt-sep"></span>
+    <button data-cmd="justifyLeft" title="Align left">⟸</button>
+    <button data-cmd="justifyCenter" title="Align center">≡</button>
+    <button data-cmd="justifyRight" title="Align right">⟹</button>
+    <span class="rt-sep"></span>
+    <button class="swatch" style="background:rgba(232,166,114,.55)" data-cmd="hiliteColor" data-val="rgba(232,166,114,.35)" title="Amber highlight"></button>
+    <button class="swatch" style="background:rgba(111,184,173,.55)" data-cmd="hiliteColor" data-val="rgba(111,184,173,.35)" title="Teal highlight"></button>
+    <button class="swatch" style="background:rgba(217,120,120,.55)" data-cmd="hiliteColor" data-val="rgba(217,120,120,.35)" title="Rose highlight"></button>
+    <button class="swatch" style="background:rgba(157,195,240,.55)" data-cmd="hiliteColor" data-val="rgba(157,195,240,.35)" title="Blue highlight"></button>
+    <button data-cmd="removeFormat" title="Clear formatting">⨯</button>
+  </div>`;
+}
+document.getElementById("note-toolbar-slot").innerHTML = buildRichToolbar("note-body");
+document.getElementById("log-toolbar-slot").innerHTML = buildRichToolbar("log-body");
+document.getElementById("work-toolbar-slot").innerHTML = buildRichToolbar("work-body-input");
+
+document.addEventListener("mousedown", (e)=>{ if(e.target.closest(".rt-toolbar")) e.preventDefault(); });
+document.addEventListener("click", (e)=>{
+  const btn = e.target.closest(".rt-toolbar button");
+  if(!btn) return;
+  const toolbar = btn.closest(".rt-toolbar");
+  const editable = document.getElementById(toolbar.dataset.target);
+  if(!editable) return;
+  editable.focus();
+  document.execCommand(btn.dataset.cmd, false, btn.dataset.val || null);
+});
 
 /* ---------------- nav ---------------- */
 document.querySelectorAll("nav button").forEach(btn=>{
@@ -516,7 +728,14 @@ document.querySelectorAll("nav button").forEach(btn=>{
     if(btn.dataset.view==="today") renderToday();
     if(btn.dataset.view==="tables") renderTablePicker();
     if(btn.dataset.view==="todo") renderTodo();
+    if(btn.dataset.view==="work") renderWork();
   });
+});
+document.addEventListener("click", (e)=>{
+  const jump = e.target.closest("[data-jump]");
+  if(!jump) return;
+  const target = document.querySelector(`nav button[data-view="${jump.dataset.jump}"]`);
+  if(target) target.click();
 });
 
 /* ---------------- clock ---------------- */
@@ -528,8 +747,22 @@ function tickClock(){
 }
 tickClock(); setInterval(tickClock, 30000);
 
+/* ---------------- date helpers ---------------- */
+function startOfWeek(d){
+  const x = new Date(d);
+  const day = (x.getDay()+6)%7;
+  x.setHours(0,0,0,0);
+  x.setDate(x.getDate()-day);
+  return x;
+}
+function startOfMonth(d){
+  const x = new Date(d.getFullYear(), d.getMonth(), 1);
+  x.setHours(0,0,0,0);
+  return x;
+}
+
 /* ---------------- timetable ---------------- */
-let activeDay = DAYS[(new Date().getDay()+6)%7]; // Mon=0
+let activeDay = DAYS[(new Date().getDay()+6)%7];
 
 function renderDayTabs(){
   const el = document.getElementById("day-tabs");
@@ -543,27 +776,30 @@ function renderDayTabs(){
   });
 }
 
+function slotRowHtml(s){
+  return `
+    <div class="time">${s.start}–${s.end}</div>
+    <div class="body">
+      <div class="subj">${escapeHtml(s.subject)}</div>
+      ${s.topic ? `<div class="topic">${escapeHtml(s.topic)}</div>` : ""}
+    </div>
+    <button class="del" title="Remove">×</button>`;
+}
+
 function renderSlots(){
   const el = document.getElementById("tt-slots");
   const slots = [...data.timetable[activeDay]].sort((a,b)=>a.start.localeCompare(b.start));
   el.innerHTML = "";
-  if(slots.length===0){
-    el.innerHTML = `<div class="empty">No slots yet for ${activeDay}. Add one above.</div>`;
-    return;
-  }
+  if(slots.length===0){ el.innerHTML = `<div class="empty">No slots yet for ${activeDay}. Add one above.</div>`; return; }
   slots.forEach(s=>{
     const row = document.createElement("div");
     row.className = "slot";
-    row.innerHTML = `
-      <div class="time">${s.start}–${s.end}</div>
-      <div class="body">
-        <div class="subj">${escapeHtml(s.subject)}</div>
-        ${s.topic ? `<div class="topic">${escapeHtml(s.topic)}</div>` : ""}
-      </div>
-      <button class="del" title="Remove">×</button>`;
-    row.querySelector(".del").addEventListener("click", ()=>{
+    row.innerHTML = slotRowHtml(s);
+    row.addEventListener("click", (e)=>{ if(e.target.classList.contains("del")) return; openModal("slot", s.id); });
+    row.querySelector(".del").addEventListener("click", (e)=>{
+      e.stopPropagation();
       data.timetable[activeDay] = data.timetable[activeDay].filter(x=>x.id!==s.id);
-      saveData(); renderSlots();
+      saveData(); renderSlots(); renderToday();
     });
     el.appendChild(row);
   });
@@ -579,7 +815,7 @@ document.getElementById("tt-add").addEventListener("click", ()=>{
   saveData();
   document.getElementById("tt-subject").value = "";
   document.getElementById("tt-topic").value = "";
-  renderSlots();
+  renderSlots(); renderToday();
   toast("Slot added");
 });
 
@@ -593,14 +829,15 @@ function renderNotes(){
     const div = document.createElement("div");
     div.className = "entry";
     div.innerHTML = `
-      <div class="entry-head">
-        <span class="entry-tag">${escapeHtml(n.subject||"general")}</span>
-        <span class="entry-date">${new Date(n.ts).toLocaleDateString()}</span>
+      <div class="entry-click">
+        <div class="entry-head"><span class="entry-tag">${escapeHtml(n.subject||"general")}</span><span class="entry-date">${new Date(n.ts).toLocaleDateString()}</span></div>
+        <div class="entry-title">${escapeHtml(n.title||"Untitled")}</div>
+        <div class="entry-body rich-display">${renderRichOrPlain(n.body)}</div>
       </div>
-      <div class="entry-title">${escapeHtml(n.title||"Untitled")}</div>
-      <div class="entry-body">${escapeHtml(n.body)}</div>
       <div class="entry-actions"><button class="del-note">Delete</button></div>`;
+    div.querySelector(".entry-click").addEventListener("click", ()=>openModal("note", n.id));
     div.querySelector(".del-note").addEventListener("click", ()=>{
+      if(!confirm("Delete this note?")) return;
       data.notes = data.notes.filter(x=>x.id!==n.id);
       saveData(); renderNotes(); renderToday();
     });
@@ -610,13 +847,13 @@ function renderNotes(){
 document.getElementById("note-add").addEventListener("click", ()=>{
   const subject = document.getElementById("note-subject").value.trim();
   const title = document.getElementById("note-title").value.trim();
-  const body = document.getElementById("note-body").value.trim();
-  if(!body){ toast("Write something in the note first"); return; }
-  data.notes.push({ id: uid(), subject, title, body, ts: Date.now() });
+  const bodyEl = document.getElementById("note-body");
+  if(!bodyEl.textContent.trim()){ toast("Write something in the note first"); return; }
+  data.notes.push({ id: uid(), subject, title, body: bodyEl.innerHTML, ts: Date.now() });
   saveData();
   document.getElementById("note-subject").value = "";
   document.getElementById("note-title").value = "";
-  document.getElementById("note-body").value = "";
+  bodyEl.innerHTML = "";
   renderNotes(); renderToday();
   toast("Note saved");
 });
@@ -631,15 +868,16 @@ function renderLog(){
     const div = document.createElement("div");
     div.className = "entry";
     div.innerHTML = `
-      <div class="entry-head">
-        <span class="entry-tag">${escapeHtml(n.subject||"general")}</span>
-        <span class="entry-date">${n.date}</span>
+      <div class="entry-click">
+        <div class="entry-head"><span class="entry-tag">${escapeHtml(n.subject||"general")}</span><span class="entry-date">${n.date}</span></div>
+        <div class="entry-body rich-display">${renderRichOrPlain(n.body)}</div>
       </div>
-      <div class="entry-body">${escapeHtml(n.body)}</div>
       <div class="entry-actions"><button class="del-log">Delete</button></div>`;
+    div.querySelector(".entry-click").addEventListener("click", ()=>openModal("log", n.id));
     div.querySelector(".del-log").addEventListener("click", ()=>{
+      if(!confirm("Delete this entry?")) return;
       data.log = data.log.filter(x=>x.id!==n.id);
-      saveData(); renderLog();
+      saveData(); renderLog(); renderToday();
     });
     el.appendChild(div);
   });
@@ -648,13 +886,13 @@ document.getElementById("log-date").value = new Date().toISOString().slice(0,10)
 document.getElementById("log-add").addEventListener("click", ()=>{
   const date = document.getElementById("log-date").value || new Date().toISOString().slice(0,10);
   const subject = document.getElementById("log-subject").value.trim();
-  const body = document.getElementById("log-body").value.trim();
-  if(!body){ toast("Write what you learned first"); return; }
-  data.log.push({ id: uid(), date, subject, body });
+  const bodyEl = document.getElementById("log-body");
+  if(!bodyEl.textContent.trim()){ toast("Write what you learned first"); return; }
+  data.log.push({ id: uid(), date, subject, body: bodyEl.innerHTML });
   saveData();
   document.getElementById("log-subject").value = "";
-  document.getElementById("log-body").value = "";
-  renderLog();
+  bodyEl.innerHTML = "";
+  renderLog(); renderToday();
   toast("Logged");
 });
 
@@ -665,15 +903,10 @@ function renderTablePicker(){
   const el = document.getElementById("table-picker");
   el.innerHTML = "";
   if(data.tables.length===0){
-    if(!activeTableId){
-      document.getElementById("table-view").innerHTML =
-        `<div class="empty">No tables yet — create one above.</div>`;
-    }
+    if(!activeTableId) document.getElementById("table-view").innerHTML = `<div class="empty">No tables yet — create one above.</div>`;
     return;
   }
-  if(!activeTableId || !data.tables.find(t=>t.id===activeTableId)){
-    activeTableId = data.tables[0].id;
-  }
+  if(!activeTableId || !data.tables.find(t=>t.id===activeTableId)) activeTableId = data.tables[0].id;
   data.tables.forEach(t=>{
     const b = document.createElement("button");
     b.textContent = t.name;
@@ -702,7 +935,7 @@ function renderTableView(){
     if(!confirm(`Delete "${t.name}" and everything in it?`)) return;
     data.tables = data.tables.filter(x=>x.id!==t.id);
     activeTableId = null;
-    saveData(); renderTablePicker();
+    saveData(); renderTablePicker(); renderToday();
   });
   head.appendChild(delTableBtn);
   wrap.appendChild(head);
@@ -718,12 +951,9 @@ function renderTableView(){
     const th = document.createElement("th");
     th.innerHTML = `${escapeHtml(col)}`;
     const delCol = document.createElement("button");
-    delCol.className = "col-del";
-    delCol.textContent = "×";
-    delCol.title = "Remove column";
+    delCol.className = "col-del"; delCol.textContent = "×"; delCol.title = "Remove column";
     delCol.addEventListener("click", ()=>{
-      t.columns.splice(ci,1);
-      t.rows.forEach(r=>r.splice(ci,1));
+      t.columns.splice(ci,1); t.rows.forEach(r=>r.splice(ci,1));
       saveData(); renderTableView();
     });
     th.appendChild(delCol);
@@ -739,25 +969,16 @@ function renderTableView(){
     t.columns.forEach((_, ci)=>{
       const td = document.createElement("td");
       const input = document.createElement("input");
-      input.type = "text";
-      input.value = row[ci] || "";
-      input.addEventListener("input", ()=>{
-        row[ci] = input.value;
-        saveData();
-      });
+      input.type = "text"; input.value = row[ci] || "";
+      input.addEventListener("input", ()=>{ row[ci] = input.value; saveData(); });
       td.appendChild(input);
       tr.appendChild(td);
     });
     const delTd = document.createElement("td");
     delTd.className = "row-del-cell";
     const delBtn = document.createElement("button");
-    delBtn.className = "row-del";
-    delBtn.textContent = "×";
-    delBtn.title = "Remove row";
-    delBtn.addEventListener("click", ()=>{
-      t.rows.splice(ri,1);
-      saveData(); renderTableView();
-    });
+    delBtn.className = "row-del"; delBtn.textContent = "×"; delBtn.title = "Remove row";
+    delBtn.addEventListener("click", ()=>{ t.rows.splice(ri,1); saveData(); renderTableView(); });
     delTd.appendChild(delBtn);
     tr.appendChild(delTd);
     tbody.appendChild(tr);
@@ -769,37 +990,27 @@ function renderTableView(){
   const actions = document.createElement("div");
   actions.className = "grid-actions";
   const addRowBtn = document.createElement("button");
-  addRowBtn.className = "btn ghost";
-  addRowBtn.textContent = "Add row";
-  addRowBtn.addEventListener("click", ()=>{
-    t.rows.push(new Array(t.columns.length).fill(""));
-    saveData(); renderTableView();
-  });
+  addRowBtn.className = "btn ghost"; addRowBtn.textContent = "Add row";
+  addRowBtn.addEventListener("click", ()=>{ t.rows.push(new Array(t.columns.length).fill("")); saveData(); renderTableView(); });
   actions.appendChild(addRowBtn);
   wrap.appendChild(actions);
 
   const colAddRow = document.createElement("div");
   colAddRow.className = "col-add-row";
   const colInput = document.createElement("input");
-  colInput.type = "text";
-  colInput.placeholder = "New column name";
+  colInput.type = "text"; colInput.placeholder = "New column name";
   const colBtn = document.createElement("button");
-  colBtn.className = "btn ghost";
-  colBtn.textContent = "Add column";
+  colBtn.className = "btn ghost"; colBtn.textContent = "Add column";
   colBtn.addEventListener("click", ()=>{
     const name = colInput.value.trim();
     if(!name) return;
-    t.columns.push(name);
-    t.rows.forEach(r=>r.push(""));
-    colInput.value = "";
-    saveData(); renderTableView();
+    t.columns.push(name); t.rows.forEach(r=>r.push(""));
+    colInput.value = ""; saveData(); renderTableView();
   });
-  colAddRow.appendChild(colInput);
-  colAddRow.appendChild(colBtn);
+  colAddRow.appendChild(colInput); colAddRow.appendChild(colBtn);
   wrap.appendChild(colAddRow);
 
-  el.innerHTML = "";
-  el.appendChild(wrap);
+  el.innerHTML = ""; el.appendChild(wrap);
 }
 
 document.getElementById("new-table-add").addEventListener("click", ()=>{
@@ -813,26 +1024,13 @@ document.getElementById("new-table-add").addEventListener("click", ()=>{
   saveData();
   document.getElementById("new-table-name").value = "";
   document.getElementById("new-table-cols").value = "";
-  renderTablePicker();
+  renderTablePicker(); renderToday();
   toast("Table created");
 });
 
 /* ---------------- todo ---------------- */
 const POINTS_PER_TASK = 10;
 let todoFilter = "active";
-
-function startOfWeek(d){
-  const x = new Date(d);
-  const day = (x.getDay()+6)%7; // Mon=0
-  x.setHours(0,0,0,0);
-  x.setDate(x.getDate()-day);
-  return x;
-}
-function startOfMonth(d){
-  const x = new Date(d.getFullYear(), d.getMonth(), 1);
-  x.setHours(0,0,0,0);
-  return x;
-}
 
 function renderTodo(){
   renderTodoStats();
@@ -845,12 +1043,18 @@ function renderTodoStats(){
   const now = new Date();
   const wStart = startOfWeek(now).getTime();
   const mStart = startOfMonth(now).getTime();
-  const total = data.todos.filter(t=>t.done).length * POINTS_PER_TASK;
-  const week = data.todos.filter(t=>t.done && t.doneAt>=wStart).length * POINTS_PER_TASK;
-  const month = data.todos.filter(t=>t.done && t.doneAt>=mStart).length * POINTS_PER_TASK;
-  document.getElementById("stat-total").textContent = total;
-  document.getElementById("stat-week").textContent = week;
-  document.getElementById("stat-month").textContent = month;
+  document.getElementById("stat-total").textContent = data.todos.filter(t=>t.done).length * POINTS_PER_TASK;
+  document.getElementById("stat-week").textContent = data.todos.filter(t=>t.done && t.doneAt>=wStart).length * POINTS_PER_TASK;
+  document.getElementById("stat-month").textContent = data.todos.filter(t=>t.done && t.doneAt>=mStart).length * POINTS_PER_TASK;
+}
+
+function todoRowHtml(t, todayStr){
+  const overdue = t.due && !t.done && t.due < todayStr;
+  return `
+    <input type="checkbox" ${t.done ? "checked" : ""}>
+    <div class="todo-text">${escapeHtml(t.text)}</div>
+    ${t.due ? `<div class="todo-due${overdue ? " overdue" : ""}">${t.due}</div>` : ""}
+    <button class="del" title="Delete">×</button>`;
 }
 
 function renderTodoList(){
@@ -858,30 +1062,22 @@ function renderTodoList(){
   let items = [...data.todos].sort((a,b)=> (a.due||"9999").localeCompare(b.due||"9999") || b.createdAt-a.createdAt);
   if(todoFilter==="active") items = items.filter(t=>!t.done);
   if(todoFilter==="done") items = items.filter(t=>t.done);
-
   el.innerHTML = "";
-  if(items.length===0){
-    el.innerHTML = `<div class="empty">Nothing here.</div>`;
-    return;
-  }
+  if(items.length===0){ el.innerHTML = `<div class="empty">Nothing here.</div>`; return; }
   const todayStr = new Date().toISOString().slice(0,10);
   items.forEach(t=>{
     const row = document.createElement("div");
     row.className = "todo-item" + (t.done ? " done" : "");
-    const overdue = t.due && !t.done && t.due < todayStr;
-    row.innerHTML = `
-      <input type="checkbox" ${t.done ? "checked" : ""}>
-      <div class="todo-text">${escapeHtml(t.text)}</div>
-      ${t.due ? `<div class="todo-due${overdue ? " overdue" : ""}">${t.due}</div>` : ""}
-      <button class="del" title="Delete">×</button>`;
+    row.innerHTML = todoRowHtml(t, todayStr);
     row.querySelector('input[type="checkbox"]').addEventListener("change", (e)=>{
-      t.done = e.target.checked;
-      t.doneAt = t.done ? Date.now() : null;
-      saveData(); renderTodo();
+      t.done = e.target.checked; t.doneAt = t.done ? Date.now() : null;
+      saveData(); renderTodo(); renderToday();
     });
+    row.querySelector(".todo-text").addEventListener("click", ()=>openModal("todo", t.id));
     row.querySelector(".del").addEventListener("click", ()=>{
+      if(!confirm("Delete this task?")) return;
       data.todos = data.todos.filter(x=>x.id!==t.id);
-      saveData(); renderTodo();
+      saveData(); renderTodo(); renderToday();
     });
     el.appendChild(row);
   });
@@ -895,10 +1091,9 @@ document.getElementById("todo-add").addEventListener("click", ()=>{
   saveData();
   document.getElementById("todo-text").value = "";
   document.getElementById("todo-due").value = "";
-  renderTodo();
+  renderTodo(); renderToday();
   toast("Task added");
 });
-
 document.querySelectorAll("#todo-filters button").forEach(b=>{
   b.addEventListener("click", ()=>{
     document.querySelectorAll("#todo-filters button").forEach(x=>x.classList.remove("active"));
@@ -912,23 +1107,17 @@ function renderWeekChart(){
   const el = document.getElementById("week-chart");
   const wStart = startOfWeek(new Date());
   const counts = [];
-  let createdCount = 0, doneCount = 0;
   for(let i=0;i<7;i++){
     const dayStart = new Date(wStart); dayStart.setDate(wStart.getDate()+i);
     const dayEnd = new Date(dayStart); dayEnd.setDate(dayStart.getDate()+1);
-    const c = data.todos.filter(t=>t.done && t.doneAt>=dayStart.getTime() && t.doneAt<dayEnd.getTime()).length;
-    counts.push(c);
+    counts.push(data.todos.filter(t=>t.done && t.doneAt>=dayStart.getTime() && t.doneAt<dayEnd.getTime()).length);
   }
-  createdCount = data.todos.filter(t=>t.createdAt>=wStart.getTime()).length;
-  doneCount = data.todos.filter(t=>t.done && t.doneAt>=wStart.getTime()).length;
+  const createdCount = data.todos.filter(t=>t.createdAt>=wStart.getTime()).length;
+  const doneCount = data.todos.filter(t=>t.done && t.doneAt>=wStart.getTime()).length;
   const max = Math.max(1, ...counts);
   const labels = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
   el.innerHTML = counts.map((c,i)=>`
-    <div class="bar-col">
-      <div class="bar-val">${c || ""}</div>
-      <div class="bar" style="height:${(c/max)*80}px;"></div>
-      <div class="bar-label">${labels[i]}</div>
-    </div>`).join("");
+    <div class="bar-col"><div class="bar-val">${c || ""}</div><div class="bar" style="height:${(c/max)*80}px;"></div><div class="bar-label">${labels[i]}</div></div>`).join("");
   const rate = createdCount>0 ? Math.round((doneCount/createdCount)*100) : (doneCount>0 ? 100 : 0);
   document.getElementById("week-rate").textContent = createdCount>0 || doneCount>0 ? `${rate}% done` : "";
 }
@@ -943,62 +1132,403 @@ function renderMonthChart(){
     const day = new Date(now.getFullYear(), now.getMonth(), d);
     const dayEnd = new Date(now.getFullYear(), now.getMonth(), d+1);
     const c = data.todos.filter(t=>t.done && t.doneAt>=day.getTime() && t.doneAt<dayEnd.getTime()).length;
-    const bucket = Math.min(4, Math.floor((d-1)/7));
-    weekBuckets[bucket] += c;
+    weekBuckets[Math.min(4, Math.floor((d-1)/7))] += c;
   }
   const max = Math.max(1, ...weekBuckets);
   const createdCount = data.todos.filter(t=>t.createdAt>=mStart.getTime()).length;
   const doneCount = data.todos.filter(t=>t.done && t.doneAt>=mStart.getTime()).length;
   el.innerHTML = weekBuckets.map((c,i)=>`
-    <div class="bar-col month">
-      <div class="bar-val">${c || ""}</div>
-      <div class="bar" style="height:${(c/max)*80}px;"></div>
-      <div class="bar-label">Wk ${i+1}</div>
-    </div>`).join("");
+    <div class="bar-col month"><div class="bar-val">${c || ""}</div><div class="bar" style="height:${(c/max)*80}px;"></div><div class="bar-label">Wk ${i+1}</div></div>`).join("");
   const rate = createdCount>0 ? Math.round((doneCount/createdCount)*100) : (doneCount>0 ? 100 : 0);
   document.getElementById("month-rate").textContent = createdCount>0 || doneCount>0 ? `${rate}% done` : "";
 }
 
+/* ---------------- work / progress ---------------- */
+function setWorkStatus(id, status){
+  const w = data.work.find(x=>x.id===id);
+  if(!w) return;
+  w.status = status;
+  w.completedAt = status==="done" ? Date.now() : null;
+  saveData();
+  renderWork(); renderToday();
+}
+
+function renderWork(){ renderWorkList(); renderWorkProgress(); }
+
+function renderWorkList(){
+  const el = document.getElementById("work-list");
+  const active = data.work.filter(w=>w.status!=="done").sort((a,b)=>b.createdAt-a.createdAt);
+  el.innerHTML = active.length===0 ? `<div class="empty">No work items yet.</div>` : "";
+  active.forEach(w=>{
+    const div = document.createElement("div");
+    div.className = "work-item";
+    div.innerHTML = `
+      <div class="work-title">${escapeHtml(w.title)}</div>
+      <div class="work-body-preview">${escapeHtml(stripTags(w.body).slice(0,140))}</div>
+      <div class="status-btns">
+        <button class="pending ${w.status==='pending'?'active':''}" data-s="pending">Pending</button>
+        <button class="semi ${w.status==='semi'?'active':''}" data-s="semi">Semi-done</button>
+        <button class="done ${w.status==='done'?'active':''}" data-s="done">Done</button>
+      </div>
+      ${w.status==='semi' ? `<div class="remark-box"><label>What's left?</label><textarea class="remark-input" placeholder="e.g. Just need to test the checkout flow">${escapeHtml(w.remark||"")}</textarea></div>` : ""}`;
+    div.querySelector(".work-title").addEventListener("click", ()=>openModal("work", w.id));
+    div.querySelectorAll(".status-btns button").forEach(b=>{
+      b.addEventListener("click", ()=> setWorkStatus(w.id, b.dataset.s));
+    });
+    const remarkInput = div.querySelector(".remark-input");
+    if(remarkInput){ remarkInput.addEventListener("input", ()=>{ w.remark = remarkInput.value; saveData(); }); }
+    el.appendChild(div);
+  });
+
+  const doneEl = document.getElementById("work-done-list");
+  const done = data.work.filter(w=>w.status==="done").sort((a,b)=>(b.completedAt||0)-(a.completedAt||0));
+  doneEl.innerHTML = done.length===0 ? `<div class="empty">Nothing completed yet.</div>` : "";
+  done.forEach(w=>{
+    const div = document.createElement("div");
+    div.className = "work-item done-list";
+    div.innerHTML = `<div class="work-title">${escapeHtml(w.title)}</div><div style="font-size:11.5px;color:var(--ink-faint);">${new Date(w.completedAt).toLocaleDateString()}</div>`;
+    div.addEventListener("click", ()=>openModal("work", w.id));
+    doneEl.appendChild(div);
+  });
+}
+
+document.getElementById("work-add").addEventListener("click", ()=>{
+  const title = document.getElementById("work-title-input").value.trim();
+  const bodyEl = document.getElementById("work-body-input");
+  if(!title){ toast("Give the work a title"); return; }
+  data.work.push({ id: uid(), title, body: bodyEl.innerHTML, status:"pending", remark:"", createdAt: Date.now(), completedAt:null });
+  saveData();
+  document.getElementById("work-title-input").value = "";
+  bodyEl.innerHTML = "";
+  renderWork(); renderToday();
+  toast("Added to progress tracker");
+});
+
+let workProgressView = "weekly";
+document.querySelectorAll("#work-progress-tabs button").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll("#work-progress-tabs button").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    workProgressView = b.dataset.range;
+    document.getElementById("wp-custom-range").style.display = workProgressView==="custom" ? "flex" : "none";
+    renderWorkProgress();
+  });
+});
+document.getElementById("wp-apply").addEventListener("click", renderWorkProgress);
+
+function renderWorkItemsList(items){
+  if(items.length===0) return `<div class="empty">Nothing completed in this range yet.</div>`;
+  return items.sort((a,b)=>b.completedAt-a.completedAt).map(w=>`
+    <div class="work-item done-list" data-id="${w.id}">
+      <div class="work-title">${escapeHtml(w.title)}</div>
+      <div style="font-size:11.5px;color:var(--ink-faint);">${new Date(w.completedAt).toLocaleDateString()}</div>
+    </div>`).join("");
+}
+function wireWorkItemClicks(container){
+  container.querySelectorAll("[data-id]").forEach(el=>{
+    el.addEventListener("click", ()=>openModal("work", el.dataset.id));
+  });
+}
+
+function renderWorkProgress(){
+  const el = document.getElementById("work-progress-body");
+  const now = new Date();
+
+  if(workProgressView==="daily"){
+    const dayStart = new Date(); dayStart.setHours(0,0,0,0);
+    const dayEnd = new Date(dayStart); dayEnd.setDate(dayStart.getDate()+1);
+    const items = data.work.filter(w=>w.status==="done" && w.completedAt>=dayStart.getTime() && w.completedAt<dayEnd.getTime());
+    el.innerHTML = `<div class="stat-box" style="max-width:200px;margin-bottom:14px;"><div class="stat-label">Completed today</div><div class="stat-value">${items.length}</div></div>` + renderWorkItemsList(items);
+  }else if(workProgressView==="weekly"){
+    const wStart = startOfWeek(now);
+    const counts=[]; const labels=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+    for(let i=0;i<7;i++){
+      const ds=new Date(wStart); ds.setDate(wStart.getDate()+i);
+      const de=new Date(ds); de.setDate(ds.getDate()+1);
+      counts.push(data.work.filter(w=>w.status==="done"&&w.completedAt>=ds.getTime()&&w.completedAt<de.getTime()).length);
+    }
+    const max=Math.max(1,...counts);
+    const items = data.work.filter(w=>w.status==="done" && w.completedAt>=wStart.getTime());
+    el.innerHTML = `<div class="bar-chart">${counts.map((c,i)=>`<div class="bar-col"><div class="bar-val">${c||""}</div><div class="bar" style="height:${(c/max)*80}px;"></div><div class="bar-label">${labels[i]}</div></div>`).join("")}</div>` + renderWorkItemsList(items);
+  }else if(workProgressView==="monthly"){
+    const mStart = startOfMonth(now);
+    const daysInMonth = new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
+    const buckets=[0,0,0,0,0];
+    for(let d=1; d<=daysInMonth; d++){
+      const ds=new Date(now.getFullYear(),now.getMonth(),d);
+      const de=new Date(now.getFullYear(),now.getMonth(),d+1);
+      const c = data.work.filter(w=>w.status==="done"&&w.completedAt>=ds.getTime()&&w.completedAt<de.getTime()).length;
+      buckets[Math.min(4,Math.floor((d-1)/7))]+=c;
+    }
+    const max=Math.max(1,...buckets);
+    const items = data.work.filter(w=>w.status==="done" && w.completedAt>=mStart.getTime());
+    el.innerHTML = `<div class="bar-chart">${buckets.map((c,i)=>`<div class="bar-col month"><div class="bar-val">${c||""}</div><div class="bar" style="height:${(c/max)*80}px;"></div><div class="bar-label">Wk ${i+1}</div></div>`).join("")}</div>` + renderWorkItemsList(items);
+  }else{
+    const from = document.getElementById("wp-from").value;
+    const to = document.getElementById("wp-to").value;
+    if(!from || !to){ el.innerHTML = `<div class="empty">Pick a start and end date above.</div>`; return; }
+    const fromTs = new Date(from).getTime();
+    const toTs = new Date(to).getTime() + 86400000;
+    const items = data.work.filter(w=>w.status==="done" && w.completedAt>=fromTs && w.completedAt<toTs);
+    el.innerHTML = `<div class="stat-box" style="max-width:200px;margin-bottom:14px;"><div class="stat-label">Completed in range</div><div class="stat-value">${items.length}</div></div>` + renderWorkItemsList(items);
+  }
+  wireWorkItemClicks(el);
+}
+
+/* ---------------- guide ---------------- */
+document.querySelectorAll(".lang-toggle button").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll(".lang-toggle button").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    document.querySelectorAll(".guide-content").forEach(c=>c.classList.remove("active"));
+    document.getElementById("guide-"+b.dataset.lang).classList.add("active");
+  });
+});
+
 /* ---------------- today ---------------- */
 function renderToday(){
-  document.getElementById("today-date").textContent =
-    new Date().toLocaleDateString(undefined,{weekday:"long", month:"long", day:"numeric"});
+  document.getElementById("today-date").textContent = new Date().toLocaleDateString(undefined,{weekday:"long", month:"long", day:"numeric"});
   const day = DAYS[(new Date().getDay()+6)%7];
-  const el = document.getElementById("today-slots");
+
+  const slotsEl = document.getElementById("today-slots");
   const slots = [...data.timetable[day]].sort((a,b)=>a.start.localeCompare(b.start));
-  el.innerHTML = "";
+  slotsEl.innerHTML = "";
   if(slots.length===0){
-    el.innerHTML = `<div class="empty">Nothing scheduled today. Add slots in the Timetable tab.</div>`;
+    slotsEl.innerHTML = `<div class="empty">Nothing scheduled today. Add slots in the Timetable tab.</div>`;
   }else{
     slots.forEach(s=>{
       const row = document.createElement("div");
       row.className = "slot";
-      row.innerHTML = `
-        <div class="time">${s.start}–${s.end}</div>
-        <div class="body">
-          <div class="subj">${escapeHtml(s.subject)}</div>
-          ${s.topic ? `<div class="topic">${escapeHtml(s.topic)}</div>` : ""}
-        </div>`;
-      el.appendChild(row);
+      row.innerHTML = slotRowHtml(s);
+      row.querySelector(".del").style.display = "none";
+      row.addEventListener("click", ()=>openModal("slot", s.id));
+      slotsEl.appendChild(row);
     });
   }
 
   const notesEl = document.getElementById("today-notes");
-  const recent = [...data.notes].sort((a,b)=>b.ts-a.ts).slice(0,3);
-  notesEl.innerHTML = recent.length===0
-    ? `<div class="empty">No notes yet — add one from the Notes tab.</div>`
-    : recent.map(n=>`
-        <div class="entry">
-          <div class="entry-head">
-            <span class="entry-tag">${escapeHtml(n.subject||"general")}</span>
-            <span class="entry-date">${new Date(n.ts).toLocaleDateString()}</span>
-          </div>
-          <div class="entry-title">${escapeHtml(n.title||"Untitled")}</div>
-        </div>`).join("");
+  const recentNotes = [...data.notes].sort((a,b)=>b.ts-a.ts).slice(0,4);
+  notesEl.innerHTML = recentNotes.length===0 ? `<div class="empty">No notes yet.</div>` :
+    recentNotes.map(n=>`
+      <div class="entry"><div class="entry-click" data-id="${n.id}">
+        <div class="entry-head"><span class="entry-tag">${escapeHtml(n.subject||"general")}</span><span class="entry-date">${new Date(n.ts).toLocaleDateString()}</span></div>
+        <div class="entry-title">${escapeHtml(n.title||"Untitled")}</div>
+      </div></div>`).join("");
+  notesEl.querySelectorAll("[data-id]").forEach(el=>el.addEventListener("click",()=>openModal("note", el.dataset.id)));
+
+  const logEl = document.getElementById("today-log");
+  const recentLog = [...data.log].sort((a,b)=>(b.date||"").localeCompare(a.date||"")).slice(0,4);
+  logEl.innerHTML = recentLog.length===0 ? `<div class="empty">No entries yet.</div>` :
+    recentLog.map(n=>`
+      <div class="entry"><div class="entry-click" data-id="${n.id}">
+        <div class="entry-head"><span class="entry-tag">${escapeHtml(n.subject||"general")}</span><span class="entry-date">${n.date}</span></div>
+        <div class="entry-body">${escapeHtml(stripTags(n.body).slice(0,120))}</div>
+      </div></div>`).join("");
+  logEl.querySelectorAll("[data-id]").forEach(el=>el.addEventListener("click",()=>openModal("log", el.dataset.id)));
+
+  const tablesEl = document.getElementById("today-tables");
+  tablesEl.innerHTML = data.tables.length===0 ? `<div class="empty">No tables yet.</div>` :
+    data.tables.map(t=>`<div class="entry"><div class="entry-title">${escapeHtml(t.name)}</div><div style="font-size:12px;color:var(--ink-faint);">${t.rows.length} row${t.rows.length===1?"":"s"} · ${t.columns.length} column${t.columns.length===1?"":"s"}</div></div>`).join("");
+
+  const todosEl = document.getElementById("today-todos");
+  const activeTodos = data.todos.filter(t=>!t.done).slice(0,5);
+  const todayStr = new Date().toISOString().slice(0,10);
+  todosEl.innerHTML = activeTodos.length===0 ? `<div class="empty">Nothing pending.</div>` :
+    activeTodos.map(t=>`<div class="todo-item" data-id="${t.id}">${todoRowHtml(t, todayStr)}</div>`).join("");
+  todosEl.querySelectorAll(".todo-item").forEach(row=>{
+    row.querySelector(".del").style.display = "none";
+    const id = row.dataset.id;
+    row.querySelector('input[type="checkbox"]').addEventListener("change",(e)=>{
+      const t = data.todos.find(x=>x.id===id);
+      t.done = e.target.checked; t.doneAt = t.done ? Date.now() : null;
+      saveData(); renderTodo(); renderToday();
+    });
+    row.querySelector(".todo-text").addEventListener("click", ()=>openModal("todo", id));
+  });
+
+  const workEl = document.getElementById("today-work");
+  const activeWork = data.work.filter(w=>w.status!=="done").slice(0,4);
+  workEl.innerHTML = activeWork.length===0 ? `<div class="empty">No active work items.</div>` :
+    activeWork.map(w=>`<div class="entry" data-id="${w.id}"><div class="entry-title" style="cursor:pointer;">${escapeHtml(w.title)}</div><div style="font-size:11.5px;color:var(--ink-faint);text-transform:capitalize;">${w.status}</div></div>`).join("");
+  workEl.querySelectorAll("[data-id]").forEach(el=>el.addEventListener("click",()=>openModal("work", el.dataset.id)));
 }
 
-function escapeHtml(s){
-  return (s||"").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+/* ---------------- detail / edit modal ---------------- */
+let modalState = { type:null, id:null, editing:false };
+
+function getItem(type, id){
+  if(type==="note") return data.notes.find(x=>x.id===id);
+  if(type==="log") return data.log.find(x=>x.id===id);
+  if(type==="todo") return data.todos.find(x=>x.id===id);
+  if(type==="work") return data.work.find(x=>x.id===id);
+  if(type==="slot"){
+    for(const d of DAYS){ const s = data.timetable[d].find(x=>x.id===id); if(s) return Object.assign({}, s, {_day:d}); }
+  }
+  return null;
+}
+function deleteItem(type, id){
+  if(type==="note") data.notes = data.notes.filter(x=>x.id!==id);
+  if(type==="log") data.log = data.log.filter(x=>x.id!==id);
+  if(type==="todo") data.todos = data.todos.filter(x=>x.id!==id);
+  if(type==="work") data.work = data.work.filter(x=>x.id!==id);
+  if(type==="slot"){ DAYS.forEach(d=>{ data.timetable[d] = data.timetable[d].filter(x=>x.id!==id); }); }
+  saveData();
+  refreshEverything();
+}
+function openModal(type, id){
+  modalState = { type, id, editing:false };
+  document.getElementById("modal-overlay").classList.add("show");
+  renderModal();
+}
+function closeModal(){
+  document.getElementById("modal-overlay").classList.remove("show");
+  modalState = { type:null, id:null, editing:false };
+}
+document.getElementById("modal-close").addEventListener("click", closeModal);
+document.getElementById("modal-overlay").addEventListener("click", (e)=>{ if(e.target.id==="modal-overlay") closeModal(); });
+
+function renderModal(){
+  const { type, id, editing } = modalState;
+  const item = getItem(type, id);
+  if(!item){ closeModal(); return; }
+  const tagText = {note:"note", log:"log entry", todo:"task", slot:"timetable slot", work:"work item"}[type];
+  document.getElementById("modal-tag").textContent = tagText;
+  const bodyEl = document.getElementById("modal-body");
+  const footEl = document.getElementById("modal-footer");
+
+  if(!editing){
+    let html = "";
+    if(type==="note"){
+      html = `<h3 style="font-family:var(--serif);font-style:italic;font-weight:400;font-size:19px;margin:0 0 4px;">${escapeHtml(item.title||"Untitled")}</h3>
+        <div style="font-size:12px;color:var(--ink-faint);margin-bottom:14px;">${escapeHtml(item.subject||"general")} · ${new Date(item.ts).toLocaleString()}</div>
+        <div class="rich-display">${renderRichOrPlain(item.body)}</div>`;
+    }else if(type==="log"){
+      html = `<div style="font-size:12px;color:var(--ink-faint);margin-bottom:14px;">${escapeHtml(item.subject||"general")} · ${item.date}</div>
+        <div class="rich-display">${renderRichOrPlain(item.body)}</div>`;
+    }else if(type==="todo"){
+      html = `<h3 style="font-family:var(--serif);font-style:italic;font-weight:400;font-size:19px;margin:0 0 8px;">${escapeHtml(item.text)}</h3>
+        ${item.due ? `<div style="font-size:12.5px;color:var(--ink-faint);">Due ${item.due}</div>` : ""}`;
+    }else if(type==="slot"){
+      html = `<h3 style="font-family:var(--serif);font-style:italic;font-weight:400;font-size:19px;margin:0 0 8px;">${escapeHtml(item.subject)}</h3>
+        <div style="font-size:12.5px;color:var(--ink-faint);margin-bottom:6px;">${item._day} · ${item.start}–${item.end}</div>
+        ${item.topic ? `<div style="font-size:13.5px;color:var(--ink-dim);">${escapeHtml(item.topic)}</div>` : ""}`;
+    }else if(type==="work"){
+      html = `<h3 style="font-family:var(--serif);font-style:italic;font-weight:400;font-size:19px;margin:0 0 8px;">${escapeHtml(item.title)}</h3>
+        <div class="rich-display">${renderRichOrPlain(item.body)}</div>
+        ${item.remark ? `<div class="remark-box"><label>What's left</label><div style="font-size:13.5px;color:var(--ink-dim);">${escapeHtml(item.remark)}</div></div>` : ""}`;
+    }
+    bodyEl.innerHTML = html;
+
+    footEl.innerHTML = `<button class="btn ghost" id="modal-edit-btn">Edit</button><button class="btn danger" id="modal-del-btn">Delete</button>`;
+    if(type==="todo" || type==="work"){
+      const statusWrap = document.createElement("div");
+      statusWrap.className = "status-btns";
+      if(type==="todo"){
+        statusWrap.innerHTML = `
+          <button class="pending ${!item.done?'active':''}" data-status="pending">Pending</button>
+          <button class="done ${item.done?'active':''}" data-status="done">Done</button>`;
+      }else{
+        statusWrap.innerHTML = `
+          <button class="pending ${item.status==='pending'?'active':''}" data-status="pending">Pending</button>
+          <button class="semi ${item.status==='semi'?'active':''}" data-status="semi">Semi-done</button>
+          <button class="done ${item.status==='done'?'active':''}" data-status="done">Done</button>`;
+      }
+      footEl.appendChild(statusWrap);
+      statusWrap.querySelectorAll("button").forEach(b=>{
+        b.addEventListener("click", ()=>{
+          if(type==="todo"){
+            const t = data.todos.find(x=>x.id===id);
+            t.done = b.dataset.status==="done"; t.doneAt = t.done ? Date.now() : null;
+            saveData(); renderTodo(); renderToday();
+          }else{
+            setWorkStatus(id, b.dataset.status);
+          }
+          renderModal();
+        });
+      });
+    }
+    document.getElementById("modal-edit-btn").addEventListener("click", ()=>{ modalState.editing=true; renderModal(); });
+    document.getElementById("modal-del-btn").addEventListener("click", ()=>{
+      if(!confirm("Delete this?")) return;
+      deleteItem(type, id);
+      closeModal();
+    });
+  }else{
+    let html = "";
+    if(type==="note"){
+      html = `<label>Subject</label><input type="text" id="modal-f-subject" value="${escapeHtml(item.subject||"")}">
+        <label>Title</label><input type="text" id="modal-f-title" value="${escapeHtml(item.title||"")}">
+        <label>Note</label>
+        <div id="modal-toolbar-slot"></div>
+        <div class="rt-editable" id="modal-f-body" contenteditable="true">${item.body||""}</div>`;
+    }else if(type==="log"){
+      html = `<label>Subject</label><input type="text" id="modal-f-subject" value="${escapeHtml(item.subject||"")}">
+        <label>Date</label><input type="date" id="modal-f-date" value="${item.date||""}">
+        <label>What did you learn</label>
+        <div id="modal-toolbar-slot"></div>
+        <div class="rt-editable" id="modal-f-body" contenteditable="true">${item.body||""}</div>`;
+    }else if(type==="todo"){
+      html = `<label>Task</label><input type="text" id="modal-f-text" value="${escapeHtml(item.text)}">
+        <label>Due</label><input type="date" id="modal-f-due" value="${item.due||""}">`;
+    }else if(type==="slot"){
+      html = `<label>Day</label><select id="modal-f-day">${DAYS.map(d=>`<option value="${d}" ${d===item._day?"selected":""}>${d}</option>`).join("")}</select>
+        <div class="row"><div><label>Start</label><input type="time" id="modal-f-start" value="${item.start}"></div><div><label>End</label><input type="time" id="modal-f-end" value="${item.end}"></div></div>
+        <label>Subject</label><input type="text" id="modal-f-subject" value="${escapeHtml(item.subject)}">
+        <label>Topic</label><input type="text" id="modal-f-topic" value="${escapeHtml(item.topic||"")}">`;
+    }else if(type==="work"){
+      html = `<label>Title</label><input type="text" id="modal-f-title" value="${escapeHtml(item.title)}">
+        <label>Description</label>
+        <div id="modal-toolbar-slot"></div>
+        <div class="rt-editable" id="modal-f-body" contenteditable="true">${item.body||""}</div>
+        <label style="margin-top:10px;">What's left (if not fully done)</label>
+        <textarea id="modal-f-remark">${escapeHtml(item.remark||"")}</textarea>`;
+    }
+    bodyEl.innerHTML = html;
+    const toolbarSlot = document.getElementById("modal-toolbar-slot");
+    if(toolbarSlot) toolbarSlot.innerHTML = buildRichToolbar("modal-f-body");
+    footEl.innerHTML = `<button class="btn" id="modal-save-btn">Save</button><button class="btn ghost" id="modal-cancel-btn">Cancel</button>`;
+    document.getElementById("modal-save-btn").addEventListener("click", saveModalEdit);
+    document.getElementById("modal-cancel-btn").addEventListener("click", ()=>{ modalState.editing=false; renderModal(); });
+  }
+}
+
+function saveModalEdit(){
+  const { type, id } = modalState;
+  if(type==="slot"){
+    const item = getItem("slot", id);
+    const newDay = document.getElementById("modal-f-day").value;
+    const updated = {
+      id: item.id,
+      start: document.getElementById("modal-f-start").value,
+      end: document.getElementById("modal-f-end").value,
+      subject: document.getElementById("modal-f-subject").value.trim(),
+      topic: document.getElementById("modal-f-topic").value.trim()
+    };
+    data.timetable[item._day] = data.timetable[item._day].filter(x=>x.id!==id);
+    data.timetable[newDay].push(updated);
+  }else{
+    const item = getItem(type, id);
+    if(type==="note"){
+      item.subject = document.getElementById("modal-f-subject").value.trim();
+      item.title = document.getElementById("modal-f-title").value.trim();
+      item.body = document.getElementById("modal-f-body").innerHTML;
+    }else if(type==="log"){
+      item.subject = document.getElementById("modal-f-subject").value.trim();
+      item.date = document.getElementById("modal-f-date").value;
+      item.body = document.getElementById("modal-f-body").innerHTML;
+    }else if(type==="todo"){
+      item.text = document.getElementById("modal-f-text").value.trim();
+      item.due = document.getElementById("modal-f-due").value || null;
+    }else if(type==="work"){
+      item.title = document.getElementById("modal-f-title").value.trim();
+      item.body = document.getElementById("modal-f-body").innerHTML;
+      item.remark = document.getElementById("modal-f-remark").value.trim();
+    }
+  }
+  saveData();
+  modalState.editing = false;
+  renderModal();
+  refreshEverything();
 }
 
 /* ---------------- local backup ---------------- */
@@ -1016,34 +1546,56 @@ document.getElementById("import-json").addEventListener("change", (e)=>{
   const reader = new FileReader();
   reader.onload = () => {
     try{
-      const incoming = JSON.parse(reader.result);
-      data = Object.assign({timetable:{}, notes:[], log:[], tables:[], todos:[]}, incoming);
-      DAYS.forEach(d => { if(!data.timetable[d]) data.timetable[d] = []; });
-      if(!data.tables) data.tables = [];
-  if(!data.todos) data.todos = [];
+      data = normalizeData(JSON.parse(reader.result));
       saveData();
-      renderDayTabs(); renderSlots(); renderNotes(); renderLog(); renderToday(); renderTablePicker(); renderTodo();
+      refreshEverything();
       toast("Backup restored");
     }catch(err){ toast("That file couldn't be read"); }
   };
   reader.readAsText(file);
 });
 document.getElementById("wipe-all").addEventListener("click", ()=>{
-  if(!confirm("This erases every note, log entry, and timetable slot on this device. Continue?")) return;
+  if(!confirm("This erases every note, log entry, table, task, and work item on this device. Continue?")) return;
   localStorage.removeItem(STORE_KEY);
-  data = loadData();
-  DAYS.forEach(d => { if(!data.timetable[d]) data.timetable[d] = []; });
-  if(!data.tables) data.tables = [];
-  if(!data.todos) data.todos = [];
-  renderDayTabs(); renderSlots(); renderNotes(); renderLog(); renderToday(); renderTablePicker(); renderTodo();
+  data = emptyData();
+  data = normalizeData(data);
+  refreshEverything();
   toast("All local data erased");
 });
 
-/* ---------------- google drive sync ----------------
-   Uses Google Identity Services (token client) + Drive API v3.
-   Stores one file, "desk-data.json", in the app's private
-   appDataFolder space (invisible in the user's normal Drive list).
-------------------------------------------------------- */
+/* ---------------- private mode ---------------- */
+const privateDot = document.getElementById("private-dot");
+const privateStatus = document.getElementById("private-status");
+const privateToggleBtn = document.getElementById("private-toggle");
+
+function renderPrivateMode(){
+  if(privateMode){
+    privateDot.classList.add("on");
+    privateStatus.textContent = "On — this device won't remember anything after you close the tab";
+    privateToggleBtn.textContent = "Turn off private mode";
+  }else{
+    privateDot.classList.remove("on");
+    privateStatus.textContent = "Off — saving normally to this browser";
+    privateToggleBtn.textContent = "Turn on private mode";
+  }
+}
+renderPrivateMode();
+privateToggleBtn.addEventListener("click", ()=>{
+  if(!privateMode){
+    const hasLocal = !!localStorage.getItem(STORE_KEY);
+    if(hasLocal && !confirm("Turning this on will also erase what's currently saved on this browser, so nothing is left behind. Continue?")) return;
+    localStorage.removeItem(STORE_KEY);
+    privateMode = true;
+    toast("Private mode on — nothing will be saved to this device");
+  }else{
+    privateMode = false;
+    saveData();
+    toast("Private mode off — saving to this browser again");
+  }
+  renderPrivateMode();
+});
+
+/* ---------------- google drive sync ---------------- */
 const DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.appdata";
 let gisToken = null;
 let driveFileId = null;
@@ -1130,24 +1682,15 @@ driveLoadBtn.addEventListener("click", async ()=>{
       { headers: { Authorization: "Bearer " + gisToken } }
     );
     const incoming = await res.json();
-    data = Object.assign({timetable:{}, notes:[], log:[], tables:[], todos:[]}, incoming);
-    DAYS.forEach(d => { if(!data.timetable[d]) data.timetable[d] = []; });
-    if(!data.tables) data.tables = [];
-  if(!data.todos) data.todos = [];
+    data = normalizeData(incoming);
     saveData();
-    renderDayTabs(); renderSlots(); renderNotes(); renderLog(); renderToday(); renderTablePicker(); renderTodo();
+    refreshEverything();
     toast("Loaded from Google Drive");
   }catch(e){ toast("Load from Drive failed"); }
 });
 
 /* ---------------- init ---------------- */
-renderDayTabs();
-renderSlots();
-renderNotes();
-renderLog();
-renderToday();
-renderTablePicker();
-renderTodo();
+refreshEverything();
 </script>
 </body>
 </html>
