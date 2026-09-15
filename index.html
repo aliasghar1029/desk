@@ -593,7 +593,7 @@
 /* ============================================================
    CONFIG — only needed if you want Google Drive sync.
    ============================================================ */
-const CONFIG = { GOOGLE_CLIENT_ID: "" };
+const CONFIG = { GOOGLE_CLIENT_ID: "569446713983-bki6qrc4oun37krmsgorp72qille7l6d.apps.googleusercontent.com" };
 const CREDENTIALS = { user: "wellzone", pass: "waterfire1800" };
 
 /* ---------------- login lock ---------------- */
@@ -1716,7 +1716,7 @@ const driveHint = document.getElementById("drive-hint");
 
 function initDriveUI(){
   if(!CONFIG.GOOGLE_CLIENT_ID){
-    driveHint.textContent = "569446713983-bki6qrc4oun37krmsgorp72qille7l6d.apps.googleusercontent.com";
+    driveHint.textContent = "Add your Google OAuth Client ID in the CONFIG block of index.html to enable this.";
     driveConnectBtn.disabled = true;
     driveConnectBtn.style.opacity = 0.5;
     driveConnectBtn.style.cursor = "not-allowed";
