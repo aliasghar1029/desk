@@ -1703,7 +1703,7 @@ privateToggleBtn.addEventListener("click", ()=>{
 });
 
 /* ---------------- google drive sync ---------------- */
-const DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.appdata";
+const BACKEND_URL = "https://desk-tool.vercel.app";
 let gisToken = null;
 let driveFileId = null;
 
@@ -1714,40 +1714,35 @@ const driveStatus = document.getElementById("drive-status");
 const driveDot = document.getElementById("drive-dot");
 const driveHint = document.getElementById("drive-hint");
 
-function initDriveUI(){
-  if(!CONFIG.GOOGLE_CLIENT_ID){
-    driveHint.textContent = "Add your Google OAuth Client ID in the CONFIG block of index.html to enable this.";
-    driveConnectBtn.disabled = true;
-    driveConnectBtn.style.opacity = 0.5;
-    driveConnectBtn.style.cursor = "not-allowed";
-    return;
-  }
-  driveHint.textContent = "Saves one private backup file to your Drive's app-data space — not visible in your normal Drive file list.";
-  const script = document.createElement("script");
-  script.src = "https://accounts.google.com/gsi/client";
-  script.async = true;
-  document.head.appendChild(script);
+async function getFreshToken(){
+  const res = await fetch(BACKEND_URL + "/api/get-token");
+  const json = await res.json();
+  if(!json.access_token) throw new Error("no token");
+  return json.access_token;
 }
-initDriveUI();
 
-driveConnectBtn.addEventListener("click", ()=>{
-  if(!window.google){ toast("Still loading Google's library — try again in a second"); return; }
-  const client = google.accounts.oauth2.initTokenClient({
-    client_id: CONFIG.GOOGLE_CLIENT_ID,
-    scope: DRIVE_SCOPE,
-    callback: (resp)=>{
-      if(resp.error){ toast("Connection failed: " + resp.error); return; }
-      gisToken = resp.access_token;
-      driveStatus.textContent = "Connected";
-      driveDot.classList.add("on");
-      driveConnectBtn.style.display = "none";
-      driveSaveBtn.style.display = "inline-block";
-      driveLoadBtn.style.display = "inline-block";
-      toast("Google Drive connected");
-    }
-  });
-  client.requestAccessToken();
-});
+function markConnected(){
+  driveStatus.textContent = "Connected";
+  driveDot.classList.add("on");
+  driveConnectBtn.style.display = "none";
+  driveSaveBtn.style.display = "inline-block";
+  driveLoadBtn.style.display = "inline-block";
+}
+
+async function autoConnectDrive(){
+  try{
+    gisToken = await getFreshToken();
+    markConnected();
+  }catch(e){
+    driveStatus.textContent = "Not connected";
+    driveHint.textContent = "Auto-connect failed — backend check karo.";
+  }
+}
+
+driveHint.textContent = "Connecting automatically...";
+autoConnectDrive();
+
+driveConnectBtn.addEventListener("click", autoConnectDrive);
 
 async function driveFindFile(){
   const res = await fetch(
