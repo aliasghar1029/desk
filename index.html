@@ -22,6 +22,20 @@
     --mono: "IBM Plex Mono", "SF Mono", Menlo, Consolas, monospace;
     --sans: "Inter", -apple-system, "Segoe UI", sans-serif;
   }
+  :root[data-theme="light"]{
+    --bg: #f6f3ec;
+    --bg-raised: #ffffff;
+    --bg-inset: #eee8db;
+    --line: #ddd4c0;
+    --line-soft: #ddd4c080;
+    --ink: #201d16;
+    --ink-dim: #5a5648;
+    --ink-faint: #8b8674;
+    --amber: #b5703f;
+    --amber-dim: #8a5530;
+    --teal: #2f7a6e;
+    --danger: #b23a3a;
+  }
   *{box-sizing:border-box;}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);}
   ::selection{background:var(--amber-dim);color:#12141d;}
@@ -35,7 +49,24 @@
     border-right:1px solid var(--line);
     padding:28px 0 20px;
     display:flex;flex-direction:column;
+    transition:width .2s ease, padding .2s ease, opacity .15s ease;
+    overflow:hidden;
   }
+  .side.collapsed{width:0;padding:0;border-right:none;opacity:0;}
+  .side.collapsed nav, .side.collapsed .brand, .side.collapsed .clock, .side.collapsed .side-foot{
+    white-space:nowrap;
+  }
+
+  /* ---------- floating controls ---------- */
+  .float-controls{position:fixed;top:16px;z-index:700;display:flex;gap:8px;}
+  .float-controls.left{left:16px;}
+  .float-controls.right{right:16px;}
+  .float-btn{
+    all:unset;cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+    background:var(--bg-raised);border:1px solid var(--line);border-radius:8px;color:var(--ink-dim);
+    font-size:16px;box-shadow:0 2px 8px rgba(0,0,0,.25);
+  }
+  .float-btn:hover{color:var(--ink);border-color:var(--ink-faint);}
   .brand{
     font-family:var(--serif);font-size:22px;font-style:italic;
     color:var(--ink);padding:0 24px 24px;
@@ -53,7 +84,7 @@
   .clock{font-family:var(--mono);font-size:13px;color:var(--ink-dim);padding:0 24px 14px;}
 
   /* ---------- main ---------- */
-  main{flex:1;padding:36px 44px 60px;max-width:900px;}
+  main{flex:1;padding:64px 44px 60px;max-width:900px;}
   h1{font-family:var(--serif);font-weight:400;font-style:italic;font-size:30px;margin:0 0 6px;color:var(--ink);}
   .sub{color:var(--ink-faint);font-size:13.5px;margin:0 0 30px;}
   section.view{display:none;}
@@ -127,6 +158,8 @@
   .slot .topic{font-size:12.5px;color:var(--ink-faint);margin-top:2px;}
   .slot .del{all:unset;cursor:pointer;color:var(--ink-faint);font-size:16px;line-height:1;padding:2px 4px;}
   .slot .del:hover{color:var(--danger);}
+  .slot .slot-done-check{width:17px;height:17px;flex-shrink:0;accent-color:var(--teal);cursor:pointer;margin-top:2px;}
+  .slot.done-slot .subj{color:var(--ink-faint);text-decoration:line-through;}
   .empty{color:var(--ink-faint);font-size:13.5px;padding:20px 0;font-style:italic;}
 
   /* ---------- tables ---------- */
@@ -146,8 +179,8 @@
   table.datagrid th .col-del{all:unset;cursor:pointer;color:var(--ink-faint);float:right;padding:0 2px;margin-left:8px;}
   table.datagrid th .col-del:hover{color:var(--danger);}
   table.datagrid th.row-del-head{border:none;background:transparent;min-width:34px;width:34px;padding:0;}
-  table.datagrid td input{border:none;background:transparent;border-radius:0;padding:8px 14px;width:auto;min-width:70px;font-size:13.5px;color:#ffffff;}
-  table.datagrid td input:focus{outline:none;background:var(--line-soft);}
+  table.datagrid td textarea{border:none;background:transparent;border-radius:0;padding:8px 14px;width:100%;min-width:160px;font-size:13.5px;color:#ffffff;font-family:var(--sans);resize:none;overflow:hidden;line-height:1.5;display:block;}
+  table.datagrid td textarea:focus{outline:none;background:var(--line-soft);}
   table.datagrid td.row-del-cell{min-width:34px;width:34px;text-align:center;border:none;background:transparent;}
   table.datagrid .row-del{all:unset;cursor:pointer;color:var(--ink-faint);padding:6px;}
   table.datagrid .row-del:hover{color:var(--danger);}
@@ -261,15 +294,41 @@
   @media (max-width: 720px){
     .shell{flex-direction:column;}
     .side{width:100%;flex-direction:row;overflow-x:auto;padding:14px 0;}
+    .side.collapsed{width:0;height:0;padding:0;overflow:hidden;}
     .brand{display:none;}
     nav{flex-direction:row;}
     .side-foot,.clock{display:none;}
-    main{padding:24px 18px 50px;}
+    main{padding:60px 16px 50px;}
     .modal-box{width:100vw;height:100vh;max-height:100vh;border-radius:0;padding:20px 18px 18px;}
+    .stat-row{gap:8px;}
+    .row{flex-direction:column;gap:10px;}
+    h1{font-size:24px;}
+  }
+  @media (max-width: 420px){
+    main{padding:56px 12px 46px;}
+    .card{padding:14px 14px;}
+    .float-controls.left{left:10px;}
+    .float-controls.right{right:10px;}
+    .float-btn{width:32px;height:32px;font-size:14px;}
   }
 </style>
 </head>
 <body>
+<script>
+(function(){
+  try{
+    const t = localStorage.getItem("desk_theme");
+    if(t) document.documentElement.setAttribute("data-theme", t);
+  }catch(e){}
+})();
+</script>
+
+<div class="float-controls left">
+  <button class="float-btn" id="sidebar-toggle" title="Show/hide sidebar">☰</button>
+</div>
+<div class="float-controls right">
+  <button class="float-btn" id="theme-toggle" title="Switch dark/light mode">🌙</button>
+</div>
 
 <!-- LOGIN LOCK -->
 <div class="login-overlay" id="login-overlay">
@@ -286,7 +345,7 @@
 </div>
 
 <div class="shell">
-  <aside class="side">
+  <aside class="side" id="sidebar">
     <div class="brand">desk<span>.</span></div>
     <div class="clock" id="clock"></div>
     <nav>
@@ -359,6 +418,10 @@
         <label>Note</label>
         <div id="note-toolbar-slot"></div>
         <div class="rt-editable" id="note-body" contenteditable="true" data-placeholder="Write it the way you'd explain it to yourself in 3 months."></div>
+        <div style="height:10px;"></div>
+        <label>Anything left to do about this? (optional)</label>
+        <div id="note-remark-toolbar-slot"></div>
+        <div class="rt-editable" id="note-remark" contenteditable="true" data-placeholder="e.g. Still need to try this in a real project"></div>
         <div class="form-actions"><button class="btn" id="note-add">Save note</button></div>
       </div>
 
@@ -379,6 +442,10 @@
         <label>What did you learn / do?</label>
         <div id="log-toolbar-slot"></div>
         <div class="rt-editable" id="log-body" contenteditable="true" data-placeholder="e.g. Solved 3 tree problems. Finally understood how recursion unwinds for post-order traversal."></div>
+        <div style="height:10px;"></div>
+        <label>Anything left to do about this? (optional)</label>
+        <div id="log-remark-toolbar-slot"></div>
+        <div class="rt-editable" id="log-remark" contenteditable="true" data-placeholder="e.g. Still need to revise the last problem"></div>
         <div class="form-actions"><button class="btn" id="log-add">Add entry</button></div>
       </div>
 
@@ -495,11 +562,11 @@
         <h3>Today</h3>
         <p>A single overview pulling from every other tab — today's timetable, recent notes, recent log entries, your tables, active to-dos, and active work items. Click anything here to open it in full.</p>
         <h3>Timetable</h3>
-        <p>Plan slots per day of the week. Click a slot to edit its time, subject, topic, or even move it to a different day.</p>
+        <p>Plan slots per day of the week. Click a slot to edit its time, subject, topic, or even move it to a different day. Each slot has a checkbox — tick it once you've actually done that session, and it automatically shows up as completed in Progress.</p>
         <h3>Notes &amp; Learning log</h3>
-        <p>Both have a small formatting toolbar: bold, headings, text alignment, and four highlight colors. Click any note or log entry to expand it and edit or delete it.</p>
+        <p>Both have a small formatting toolbar: bold, headings, text alignment, and four highlight colors. Each also has an optional "anything left to do about this?" box for follow-up notes. Click any note or log entry to expand it and edit or delete it.</p>
         <h3>Tables</h3>
-        <p>Build your own tracker with custom columns and rows — anything spreadsheet-like.</p>
+        <p>Build your own tracker with custom columns and rows — anything spreadsheet-like. Cells grow taller (not wider) as you type more, so everything stays lined up and readable.</p>
         <h3>To-do</h3>
         <p>Simple tasks with a due date. Every completed task is worth 10 points, shown as total / weekly / monthly score, plus bar charts of completions.</p>
         <h3>Progress</h3>
@@ -508,17 +575,19 @@
         <p>Data saves to this browser automatically. You can also download a JSON backup, turn on Private mode for a shared computer (nothing gets saved to that device), or connect Google Drive for a private cloud copy.</p>
         <h3>Login lock</h3>
         <p>A simple username/password screen guards the app. It's a convenience lock for a personal device, not real security — the credentials are visible in the page's own source code.</p>
+        <h3>Sidebar &amp; theme</h3>
+        <p>Use the ☰ button (top-left) to collapse or expand the sidebar and give the page more room. Use the sun/moon button (top-right) to switch between dark and light mode.</p>
       </div>
 
       <div class="guide-content" id="guide-ur">
         <h3>Today</h3>
         <p>Ye ek jagah hai jahan baki sab tabs ka khulasa nazar aata hai — aaj ka timetable, recent notes, recent log entries, tumhari tables, active to-dos, aur active work items. Kisi bhi cheez pe click karke usay pura khol sakte ho.</p>
         <h3>Timetable</h3>
-        <p>Har din ke liye time slots banao. Kisi slot pe click karke uska time, subject, topic badal sakte ho, ya usay kisi aur din pe move kar sakte ho.</p>
+        <p>Har din ke liye time slots banao. Kisi slot pe click karke uska time, subject, topic badal sakte ho, ya usay kisi aur din pe move kar sakte ho. Har slot ke sath ek checkbox hai — jab wo session actually kar lo to tick kar do, wo khud-ba-khud Progress me completed dikhne lagega.</p>
         <h3>Notes aur Learning log</h3>
-        <p>Dono me ek chhota formatting toolbar hai: bold, headings, text alignment, aur 4 highlight colors. Kisi bhi note ya log entry pe click karke usay poora khol ke edit ya delete kar sakte ho.</p>
+        <p>Dono me ek chhota formatting toolbar hai: bold, headings, text alignment, aur 4 highlight colors. Dono me ek optional "iske baare me kya baaki hai?" wala box bhi hai. Kisi bhi note ya log entry pe click karke usay poora khol ke edit ya delete kar sakte ho.</p>
         <h3>Tables</h3>
-        <p>Apni marzi ki table banao — jitne chaho columns aur rows, jaise koi bhi spreadsheet.</p>
+        <p>Apni marzi ki table banao — jitne chaho columns aur rows, jaise koi bhi spreadsheet. Zyada likhne par cell chaudi nahi, lambi (neeche ki taraf) hoti hai, taake sab kuch line-up aur readable rahe.</p>
         <h3>To-do</h3>
         <p>Chhote tasks, due date ke saath. Har complete task ke 10 points milte hain — total / weekly / monthly score dikhta hai, saath me bar charts bhi.</p>
         <h3>Progress</h3>
@@ -527,6 +596,8 @@
         <p>Data khud-ba-khud is browser me save hota hai. Chaho to JSON backup download kar sakte ho, kisi shared computer pe Private mode on kar sakte ho (us device pe kuch save nahi hoga), ya Google Drive connect karke ek private cloud copy rakh sakte ho.</p>
         <h3>Login lock</h3>
         <p>Ek simple username/password screen app ko guard karta hai. Ye sirf apne personal device ke liye ek halka lock hai, real security nahi — password page ke apne source code me nazar aata hai.</p>
+        <h3>Sidebar aur theme</h3>
+        <p>☰ button (top-left) se sidebar ko band/khol sakte ho, jis se page ko zyada jagah mil jati hai. Sun/moon button (top-right) se dark aur light mode ke beech switch kar sakte ho.</p>
       </div>
     </section>
 
@@ -617,6 +688,31 @@ document.getElementById("login-btn").addEventListener("click", attemptLogin);
 document.getElementById("login-pass").addEventListener("keydown", (e)=>{ if(e.key==="Enter") attemptLogin(); });
 checkLogin();
 
+/* ---------------- sidebar toggle ---------------- */
+const sidebarEl = document.getElementById("sidebar");
+const sidebarToggleBtn = document.getElementById("sidebar-toggle");
+function applySidebarState(collapsed){
+  sidebarEl.classList.toggle("collapsed", collapsed);
+  try{ localStorage.setItem("desk_sidebar_collapsed", collapsed ? "1" : "0"); }catch(e){}
+}
+applySidebarState(localStorage.getItem("desk_sidebar_collapsed")==="1");
+sidebarToggleBtn.addEventListener("click", ()=>{
+  applySidebarState(!sidebarEl.classList.contains("collapsed"));
+});
+
+/* ---------------- theme toggle ---------------- */
+const themeToggleBtn = document.getElementById("theme-toggle");
+function applyTheme(theme){
+  document.documentElement.setAttribute("data-theme", theme);
+  themeToggleBtn.textContent = theme==="light" ? "☀" : "🌙";
+  try{ localStorage.setItem("desk_theme", theme); }catch(e){}
+}
+applyTheme(localStorage.getItem("desk_theme") || "dark");
+themeToggleBtn.addEventListener("click", ()=>{
+  const current = document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
+  applyTheme(current==="light" ? "dark" : "light");
+});
+
 /* ---------------- storage ---------------- */
 const STORE_KEY = "desk_data_v1";
 const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
@@ -628,6 +724,15 @@ function normalizeData(d){
   if(!d.tables) d.tables = [];
   if(!d.todos) d.todos = [];
   if(!d.work) d.work = [];
+  DAYS.forEach(day=>{
+    d.timetable[day].forEach(s=>{
+      if(!s.status) s.status = "pending";
+      if(s.completedAt===undefined) s.completedAt = null;
+      if(s.workRefId===undefined) s.workRefId = null;
+    });
+  });
+  d.notes.forEach(n=>{ if(n.remark===undefined) n.remark = ""; });
+  d.log.forEach(n=>{ if(n.remark===undefined) n.remark = ""; });
   d.todos.forEach(t=>{
     if(!t.status) t.status = t.done ? "done" : "pending";
     if(t.remark===undefined) t.remark = "";
@@ -674,21 +779,9 @@ function refreshEverything(){
   renderDayTabs(); renderSlots(); renderNotes(); renderLog(); renderToday();
   renderTablePicker(); renderTodo(); renderWork();
 }
-function autosizeInput(input){
-  let measurer = document.getElementById("cell-measurer");
-  if(!measurer){
-    measurer = document.createElement("span");
-    measurer.id = "cell-measurer";
-    measurer.style.position = "absolute";
-    measurer.style.left = "-9999px";
-    measurer.style.top = "0";
-    measurer.style.whiteSpace = "pre";
-    measurer.style.fontSize = "13.5px";
-    measurer.style.fontFamily = "Inter, -apple-system, 'Segoe UI', sans-serif";
-    document.body.appendChild(measurer);
-  }
-  measurer.textContent = input.value || input.placeholder || "";
-  input.style.width = Math.max(70, measurer.offsetWidth + 28) + "px";
+function autoGrowTextarea(ta){
+  ta.style.height = "auto";
+  ta.style.height = ta.scrollHeight + "px";
 }
 
 /* ---------------- rich text toolbar ---------------- */
@@ -711,7 +804,9 @@ function buildRichToolbar(targetId){
   </div>`;
 }
 document.getElementById("note-toolbar-slot").innerHTML = buildRichToolbar("note-body");
+document.getElementById("note-remark-toolbar-slot").innerHTML = buildRichToolbar("note-remark");
 document.getElementById("log-toolbar-slot").innerHTML = buildRichToolbar("log-body");
+document.getElementById("log-remark-toolbar-slot").innerHTML = buildRichToolbar("log-remark");
 document.getElementById("work-toolbar-slot").innerHTML = buildRichToolbar("work-body-input");
 
 document.addEventListener("mousedown", (e)=>{ if(e.target.closest(".rt-toolbar")) e.preventDefault(); });
@@ -785,12 +880,40 @@ function renderDayTabs(){
 
 function slotRowHtml(s){
   return `
+    <input type="checkbox" class="slot-done-check" ${s.status==="done" ? "checked" : ""} title="Mark done">
     <div class="time">${s.start}–${s.end}</div>
     <div class="body">
       <div class="subj">${escapeHtml(s.subject)}</div>
       ${s.topic ? `<div class="topic">${escapeHtml(s.topic)}</div>` : ""}
     </div>
     <button class="del" title="Remove">×</button>`;
+}
+
+function toggleSlotDone(s, day, checked){
+  s.status = checked ? "done" : "pending";
+  s.completedAt = checked ? Date.now() : null;
+  if(checked){
+    if(!s.workRefId){
+      const w = { id: uid(), title: s.subject + (s.topic ? " — " + s.topic : ""), body:"", status:"done", remark:"", createdAt: Date.now(), completedAt: s.completedAt, fromTimetable:true };
+      data.work.push(w);
+      s.workRefId = w.id;
+    }else{
+      const w = data.work.find(x=>x.id===s.workRefId);
+      if(w){ w.status = "done"; w.completedAt = s.completedAt; }
+      else{
+        const nw = { id: uid(), title: s.subject + (s.topic ? " — " + s.topic : ""), body:"", status:"done", remark:"", createdAt: Date.now(), completedAt: s.completedAt, fromTimetable:true };
+        data.work.push(nw);
+        s.workRefId = nw.id;
+      }
+    }
+  }else{
+    if(s.workRefId){
+      data.work = data.work.filter(x=>x.id!==s.workRefId);
+      s.workRefId = null;
+    }
+  }
+  saveData();
+  renderSlots(); renderToday(); renderWork();
 }
 
 function renderSlots(){
@@ -800,13 +923,18 @@ function renderSlots(){
   if(slots.length===0){ el.innerHTML = `<div class="empty">No slots yet for ${activeDay}. Add one above.</div>`; return; }
   slots.forEach(s=>{
     const row = document.createElement("div");
-    row.className = "slot";
+    row.className = "slot" + (s.status==="done" ? " done-slot" : "");
     row.innerHTML = slotRowHtml(s);
-    row.addEventListener("click", (e)=>{ if(e.target.classList.contains("del")) return; openModal("slot", s.id); });
+    row.addEventListener("click", (e)=>{ if(e.target.classList.contains("del") || e.target.classList.contains("slot-done-check")) return; openModal("slot", s.id); });
+    row.querySelector(".slot-done-check").addEventListener("click", (e)=>{
+      e.stopPropagation();
+      toggleSlotDone(s, activeDay, e.target.checked);
+    });
     row.querySelector(".del").addEventListener("click", (e)=>{
       e.stopPropagation();
+      if(s.workRefId) data.work = data.work.filter(x=>x.id!==s.workRefId);
       data.timetable[activeDay] = data.timetable[activeDay].filter(x=>x.id!==s.id);
-      saveData(); renderSlots(); renderToday();
+      saveData(); renderSlots(); renderToday(); renderWork();
     });
     el.appendChild(row);
   });
@@ -840,6 +968,7 @@ function renderNotes(){
         <div class="entry-head"><span class="entry-tag">${escapeHtml(n.subject||"general")}</span><span class="entry-date">${new Date(n.ts).toLocaleDateString()}</span></div>
         <div class="entry-title">${escapeHtml(n.title||"Untitled")}</div>
         <div class="entry-body rich-display">${renderRichOrPlain(n.body)}</div>
+        ${n.remark ? `<div class="remark-box"><label>What's left</label><div class="rich-display" style="font-size:13px;color:var(--ink-dim);">${renderRichOrPlain(n.remark)}</div></div>` : ""}
       </div>
       <div class="entry-actions"><button class="del-note">Delete</button></div>`;
     div.querySelector(".entry-click").addEventListener("click", ()=>openModal("note", n.id));
@@ -855,12 +984,14 @@ document.getElementById("note-add").addEventListener("click", ()=>{
   const subject = document.getElementById("note-subject").value.trim();
   const title = document.getElementById("note-title").value.trim();
   const bodyEl = document.getElementById("note-body");
+  const remarkEl = document.getElementById("note-remark");
   if(!bodyEl.textContent.trim()){ toast("Write something in the note first"); return; }
-  data.notes.push({ id: uid(), subject, title, body: bodyEl.innerHTML, ts: Date.now() });
+  data.notes.push({ id: uid(), subject, title, body: bodyEl.innerHTML, remark: remarkEl.innerHTML, ts: Date.now() });
   saveData();
   document.getElementById("note-subject").value = "";
   document.getElementById("note-title").value = "";
   bodyEl.innerHTML = "";
+  remarkEl.innerHTML = "";
   renderNotes(); renderToday();
   toast("Note saved");
 });
@@ -878,6 +1009,7 @@ function renderLog(){
       <div class="entry-click">
         <div class="entry-head"><span class="entry-tag">${escapeHtml(n.subject||"general")}</span><span class="entry-date">${n.date}</span></div>
         <div class="entry-body rich-display">${renderRichOrPlain(n.body)}</div>
+        ${n.remark ? `<div class="remark-box"><label>What's left</label><div class="rich-display" style="font-size:13px;color:var(--ink-dim);">${renderRichOrPlain(n.remark)}</div></div>` : ""}
       </div>
       <div class="entry-actions"><button class="del-log">Delete</button></div>`;
     div.querySelector(".entry-click").addEventListener("click", ()=>openModal("log", n.id));
@@ -894,11 +1026,13 @@ document.getElementById("log-add").addEventListener("click", ()=>{
   const date = document.getElementById("log-date").value || new Date().toISOString().slice(0,10);
   const subject = document.getElementById("log-subject").value.trim();
   const bodyEl = document.getElementById("log-body");
+  const remarkEl = document.getElementById("log-remark");
   if(!bodyEl.textContent.trim()){ toast("Write what you learned first"); return; }
-  data.log.push({ id: uid(), date, subject, body: bodyEl.innerHTML });
+  data.log.push({ id: uid(), date, subject, body: bodyEl.innerHTML, remark: remarkEl.innerHTML });
   saveData();
   document.getElementById("log-subject").value = "";
   bodyEl.innerHTML = "";
+  remarkEl.innerHTML = "";
   renderLog(); renderToday();
   toast("Logged");
 });
@@ -975,12 +1109,12 @@ function renderTableView(){
     const tr = document.createElement("tr");
     t.columns.forEach((_, ci)=>{
       const td = document.createElement("td");
-      const input = document.createElement("input");
-      input.type = "text"; input.value = row[ci] || "";
-      autosizeInput(input);
-      input.addEventListener("input", ()=>{ row[ci] = input.value; autosizeInput(input); saveData(); });
-      td.appendChild(input);
+      const ta = document.createElement("textarea");
+      ta.rows = 1; ta.value = row[ci] || "";
+      td.appendChild(ta);
       tr.appendChild(td);
+      requestAnimationFrame(()=>autoGrowTextarea(ta));
+      ta.addEventListener("input", ()=>{ row[ci] = ta.value; autoGrowTextarea(ta); saveData(); });
     });
     const delTd = document.createElement("td");
     delTd.className = "row-del-cell";
@@ -1065,9 +1199,10 @@ function setTodoStatus(id, status){
   renderTodo(); renderToday();
 }
 
-function todoRowHtml(t, todayStr){
+function todoRowHtml(t, todayStr, idPrefix){
+  idPrefix = idPrefix || "todo";
   const overdue = t.due && t.status!=="done" && t.due < todayStr;
-  const remarkId = "todo-remark-" + t.id;
+  const remarkId = idPrefix + "-remark-" + t.id;
   return `
     <div class="todo-main" style="display:flex;align-items:center;gap:12px;flex:1;flex-wrap:wrap;">
       <div class="todo-text" style="flex:1;min-width:140px;">${escapeHtml(t.text)}</div>
@@ -1358,9 +1493,13 @@ function renderToday(){
     if(slots.length===0){ el.innerHTML = `<div class="empty">Nothing scheduled today. Add slots in the Timetable tab.</div>`; return; }
     slots.forEach(s=>{
       const row = document.createElement("div");
-      row.className = "slot";
+      row.className = "slot" + (s.status==="done" ? " done-slot" : "");
       row.innerHTML = slotRowHtml(s);
       row.querySelector(".del").style.display = "none";
+      row.querySelector(".slot-done-check").addEventListener("click", (e)=>{
+        e.stopPropagation();
+        toggleSlotDone(s, day, e.target.checked);
+      });
       attachRowOpen(row, "slot", s.id);
       el.appendChild(row);
     });
@@ -1374,7 +1513,8 @@ function renderToday(){
       row.innerHTML = `
         <div class="entry-head"><span class="entry-tag">${escapeHtml(n.subject||"general")}</span><span class="entry-date">${new Date(n.ts).toLocaleDateString()}</span></div>
         <div class="entry-title">${escapeHtml(n.title||"Untitled")}</div>
-        <div class="entry-body rich-display">${renderRichOrPlain(n.body)}</div>`;
+        <div class="entry-body rich-display">${renderRichOrPlain(n.body)}</div>
+        ${n.remark ? `<div class="remark-box"><label>What's left</label><div class="rich-display" style="font-size:13px;color:var(--ink-dim);">${renderRichOrPlain(n.remark)}</div></div>` : ""}`;
       attachRowOpen(row, "note", n.id);
       el.appendChild(row);
     });
@@ -1387,7 +1527,8 @@ function renderToday(){
       row.className = "entry";
       row.innerHTML = `
         <div class="entry-head"><span class="entry-tag">${escapeHtml(n.subject||"general")}</span><span class="entry-date">${n.date}</span></div>
-        <div class="entry-body rich-display">${renderRichOrPlain(n.body)}</div>`;
+        <div class="entry-body rich-display">${renderRichOrPlain(n.body)}</div>
+        ${n.remark ? `<div class="remark-box"><label>What's left</label><div class="rich-display" style="font-size:13px;color:var(--ink-dim);">${renderRichOrPlain(n.remark)}</div></div>` : ""}`;
       attachRowOpen(row, "log", n.id);
       el.appendChild(row);
     });
@@ -1412,7 +1553,7 @@ function renderToday(){
       row.className = "todo-item" + (t.status==="done" ? " done" : "");
       row.style.flexDirection = "column";
       row.style.alignItems = "stretch";
-      row.innerHTML = todoRowHtml(t, todayStr);
+      row.innerHTML = todoRowHtml(t, todayStr, "todaytodo");
       attachRowOpen(row, "todo", t.id);
       row.querySelectorAll(".status-btns button").forEach(b=>{
         b.addEventListener("click", (e)=>{ e.stopPropagation(); setTodoStatus(t.id, b.dataset.s); });
@@ -1478,7 +1619,13 @@ function deleteItem(type, id){
   if(type==="log") data.log = data.log.filter(x=>x.id!==id);
   if(type==="todo") data.todos = data.todos.filter(x=>x.id!==id);
   if(type==="work") data.work = data.work.filter(x=>x.id!==id);
-  if(type==="slot"){ DAYS.forEach(d=>{ data.timetable[d] = data.timetable[d].filter(x=>x.id!==id); }); }
+  if(type==="slot"){
+    DAYS.forEach(d=>{
+      const s = data.timetable[d].find(x=>x.id===id);
+      if(s && s.workRefId) data.work = data.work.filter(x=>x.id!==s.workRefId);
+      data.timetable[d] = data.timetable[d].filter(x=>x.id!==id);
+    });
+  }
   saveData();
   refreshEverything();
 }
@@ -1508,10 +1655,12 @@ function renderModal(){
     if(type==="note"){
       html = `<h3 style="font-family:var(--serif);font-style:italic;font-weight:400;font-size:19px;margin:0 0 4px;">${escapeHtml(item.title||"Untitled")}</h3>
         <div style="font-size:12px;color:var(--ink-faint);margin-bottom:14px;">${escapeHtml(item.subject||"general")} · ${new Date(item.ts).toLocaleString()}</div>
-        <div class="rich-display">${renderRichOrPlain(item.body)}</div>`;
+        <div class="rich-display">${renderRichOrPlain(item.body)}</div>
+        ${item.remark ? `<div class="remark-box"><label>What's left</label><div class="rich-display" style="font-size:13.5px;color:var(--ink-dim);">${renderRichOrPlain(item.remark)}</div></div>` : ""}`;
     }else if(type==="log"){
       html = `<div style="font-size:12px;color:var(--ink-faint);margin-bottom:14px;">${escapeHtml(item.subject||"general")} · ${item.date}</div>
-        <div class="rich-display">${renderRichOrPlain(item.body)}</div>`;
+        <div class="rich-display">${renderRichOrPlain(item.body)}</div>
+        ${item.remark ? `<div class="remark-box"><label>What's left</label><div class="rich-display" style="font-size:13.5px;color:var(--ink-dim);">${renderRichOrPlain(item.remark)}</div></div>` : ""}`;
     }else if(type==="todo"){
       html = `<h3 style="font-family:var(--serif);font-style:italic;font-weight:400;font-size:19px;margin:0 0 8px;">${escapeHtml(item.text)}</h3>
         ${item.due ? `<div style="font-size:12.5px;color:var(--ink-faint);margin-bottom:10px;">Due ${item.due}</div>` : ""}
@@ -1546,6 +1695,20 @@ function renderModal(){
           renderModal();
         });
       });
+    }else if(type==="slot"){
+      const statusWrap = document.createElement("div");
+      statusWrap.className = "status-btns";
+      statusWrap.innerHTML = `
+        <button class="pending ${item.status!=='done'?'active':''}" data-status="pending">Pending</button>
+        <button class="done ${item.status==='done'?'active':''}" data-status="done">Done</button>`;
+      footEl.appendChild(statusWrap);
+      statusWrap.querySelectorAll("button").forEach(b=>{
+        b.addEventListener("click", ()=>{
+          const realSlot = data.timetable[item._day].find(x=>x.id===id);
+          if(realSlot) toggleSlotDone(realSlot, item._day, b.dataset.status==="done");
+          renderModal();
+        });
+      });
     }
     document.getElementById("modal-edit-btn").addEventListener("click", ()=>{ modalState.editing=true; renderModal(); });
     document.getElementById("modal-del-btn").addEventListener("click", ()=>{
@@ -1560,13 +1723,19 @@ function renderModal(){
         <label>Title</label><input type="text" id="modal-f-title" value="${escapeHtml(item.title||"")}">
         <label>Note</label>
         <div id="modal-toolbar-slot"></div>
-        <div class="rt-editable" id="modal-f-body" contenteditable="true">${item.body||""}</div>`;
+        <div class="rt-editable" id="modal-f-body" contenteditable="true">${item.body||""}</div>
+        <label style="margin-top:10px;">Anything left to do about this?</label>
+        <div id="modal-remark-toolbar-slot"></div>
+        <div class="rt-editable" id="modal-f-remark" contenteditable="true">${item.remark||""}</div>`;
     }else if(type==="log"){
       html = `<label>Subject</label><input type="text" id="modal-f-subject" value="${escapeHtml(item.subject||"")}">
         <label>Date</label><input type="date" id="modal-f-date" value="${item.date||""}">
         <label>What did you learn</label>
         <div id="modal-toolbar-slot"></div>
-        <div class="rt-editable" id="modal-f-body" contenteditable="true">${item.body||""}</div>`;
+        <div class="rt-editable" id="modal-f-body" contenteditable="true">${item.body||""}</div>
+        <label style="margin-top:10px;">Anything left to do about this?</label>
+        <div id="modal-remark-toolbar-slot"></div>
+        <div class="rt-editable" id="modal-f-remark" contenteditable="true">${item.remark||""}</div>`;
     }else if(type==="todo"){
       html = `<label>Task</label><input type="text" id="modal-f-text" value="${escapeHtml(item.text)}">
         <label>Due</label><input type="date" id="modal-f-due" value="${item.due||""}">
@@ -1618,10 +1787,12 @@ function saveModalEdit(){
       item.subject = document.getElementById("modal-f-subject").value.trim();
       item.title = document.getElementById("modal-f-title").value.trim();
       item.body = document.getElementById("modal-f-body").innerHTML;
+      item.remark = document.getElementById("modal-f-remark").innerHTML;
     }else if(type==="log"){
       item.subject = document.getElementById("modal-f-subject").value.trim();
       item.date = document.getElementById("modal-f-date").value;
       item.body = document.getElementById("modal-f-body").innerHTML;
+      item.remark = document.getElementById("modal-f-remark").innerHTML;
     }else if(type==="todo"){
       item.text = document.getElementById("modal-f-text").value.trim();
       item.due = document.getElementById("modal-f-due").value || null;
