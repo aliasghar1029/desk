@@ -1548,7 +1548,8 @@ function wireRemarkToggle(row, item){
   toggleBtn.addEventListener("click", (e)=>{ e.stopPropagation(); box.classList.toggle("collapsed"); });
   const remarkEl = box.querySelector(".rt-editable");
   if(remarkEl){
-    document.getElementById(remarkEl.id + "-toolbar").innerHTML = buildRichToolbar(remarkEl.id);
+    const toolbarSlot = remarkEl.previousElementSibling;
+    if(toolbarSlot) toolbarSlot.innerHTML = buildRichToolbar(remarkEl.id);
     remarkEl.addEventListener("click", (e)=>e.stopPropagation());
     remarkEl.addEventListener("input", ()=>{ item.remark = remarkEl.innerHTML; saveData(); });
   }
